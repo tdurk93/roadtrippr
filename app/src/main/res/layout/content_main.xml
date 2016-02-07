@@ -17,9 +17,12 @@
         android:layout_height="wrap_content"
         android:text="Settings"
         android:id="@+id/button"
-        android:layout_alignParentBottom="true"
+        android:minHeight="75dp"
+        android:minWidth="200dp"
+        android:layout_below="@+id/button3"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="74dp" />
+        android:backgroundTint="@color/colorPrimary"
+        android:onClick="settingsActivity" />
 
     <Button
         android:layout_width="wrap_content"
@@ -27,14 +30,19 @@
         android:text="Express Itinerary"
         android:id="@+id/button2"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:minHeight="75dp"
+        android:backgroundTint="@color/colorPrimary"
+        android:minWidth="200dp" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Custom Itinerary"
         android:id="@+id/button3"
-        android:layout_above="@+id/button"
+        android:minWidth="200dp"
+        android:minHeight="75dp"
+        android:layout_below="@+id/button2"
         android:layout_alignStart="@+id/button2"
-        android:layout_marginBottom="37dp" />
+        android:backgroundTint="@color/colorPrimary" />
 </RelativeLayout>
