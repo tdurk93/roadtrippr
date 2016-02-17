@@ -20,4 +20,31 @@
         android:id="@+id/textView"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
+
+    <MultiAutoCompleteTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Favorite Restaurants"
+        android:id="@+id/multiAutoCompleteTextView"
+        android:layout_below="@+id/textView"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="54dp" />
+
+    <MultiAutoCompleteTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Favorite Restaurant Types"
+        android:id="@+id/multiAutoCompleteTextView2"
+        android:layout_below="@+id/multiAutoCompleteTextView"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="87dp" />
+
+    <MultiAutoCompleteTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Unacceptable Restaurants"
+        android:id="@+id/multiAutoCompleteTextView3"
+        android:layout_below="@+id/multiAutoCompleteTextView2"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="98dp" />
 </RelativeLayout>
