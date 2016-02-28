@@ -1,10 +1,13 @@
 <resources>
 
+    <color name="Orange">#FF8800</color>
+    <color name="DarkOrange">#c56900</color>
+
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimary">@color/Orange</item>
+        <item name="colorPrimaryDark">@color/DarkOrange</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
