@@ -30,13 +30,26 @@
         android:singleLine="true"
         android:imeOptions="actionDone" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Desired Meal Time:"
+        android:id="@+id/textView2"
+        android:layout_below="@+id/editText2"
+        android:paddingBottom="0dp"
+        android:paddingTop="24dp"
+        android:paddingLeft="2dp" />
+
     <TimePicker
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@+id/timePicker"
         android:layout_gravity="center"
         android:timePickerMode="spinner"
-        android:layout_below="@+id/editText2"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/textView2"
         android:layout_above="@+id/button" />
 
     <Button
