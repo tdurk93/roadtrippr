@@ -3,5 +3,24 @@
     <string name="ExpressItinerary">Express Itinerary</string>
     <string name="custom">Custom Itinerary</string>
     <string name="settings">Settings</string>
-    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <string-array name="restaurants">
+        <item>Taco Bell</item>
+        <item>Burger King</item>
+        <item>Five Guys</item>
+        <item>Wendy\'s</item>
+        <item>McDonald\'s</item>
+        <item>Cookout</item>
+        <item>Chick-fil-A</item>
+    </string-array>
+
+    <string-array name="restaurants_types">
+        <item>Mexican</item>
+        <item>Burgers</item>
+        <item>Chinese</item>
+        <item>Korean</item>
+        <item>Italian</item>
+    </string-array>
+
 </resources>
