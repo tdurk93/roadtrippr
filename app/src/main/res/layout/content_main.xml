@@ -61,6 +61,7 @@
         android:layout_centerHorizontal="true"
         android:minHeight="75dp"
         android:minWidth="144dp"
-        android:textSize="24sp" />
+        android:textSize="24sp"
+        android:onClick="pageTwoActivity" />
 
 </RelativeLayout>

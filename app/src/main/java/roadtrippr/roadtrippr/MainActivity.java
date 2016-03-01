@@ -17,6 +17,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void pageTwoActivity (View view) {
+
+        Intent i = new Intent(getApplicationContext(), PageTwoActivity.class);
+        startActivity(i);
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
