@@ -1,14 +1,22 @@
 package roadtrippr.roadtrippr;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.MultiAutoCompleteTextView;
 
 public class SettingsActivity extends AppCompatActivity {
 
     MultiAutoCompleteTextView favRestaurants, favTypes, noRestaurants;
+
+    Button saveButton;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,6 +24,14 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        saveButton = (Button) findViewById(R.id.saveButton);
+
+        final SharedPreferences sharedPreferences = this.getSharedPreferences("roadtrippr.roadtrippr", Context.MODE_PRIVATE);
+        String favRestaurantsString = sharedPreferences.getString("favRestaurants", "");
+        String favRestaurantsTypesString = sharedPreferences.getString("favRestaurantsTypes", "");
+        String noRestaurantsString = sharedPreferences.getString("noRestaurants", "");
+
 
         favRestaurants = (MultiAutoCompleteTextView)findViewById(R.id.multiAutoCompleteTextView);
         favTypes = (MultiAutoCompleteTextView)findViewById(R.id.multiAutoCompleteTextView2);
@@ -33,6 +49,40 @@ public class SettingsActivity extends AppCompatActivity {
 
         noRestaurants.setAdapter(adapter);
         noRestaurants.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String str1 = favRestaurants.getText().toString();
+                String str2 = favTypes.getText().toString();
+                String str3 = noRestaurants.getText().toString();
+                Log.i("Input: ", str1);
+
+                sharedPreferences.edit().putString("favRestaurants", str1).apply();
+                sharedPreferences.edit().putString("favRestaurantsTypes", str2).apply();
+                sharedPreferences.edit().putString("noRestaurants", str3).apply();
+
+            }
+        });
+
+        if(favRestaurantsString != "") {
+
+            favRestaurants.setText(favRestaurantsString);
+
+        }
+
+        if(favRestaurantsTypesString != "") {
+
+            favTypes.setText(favRestaurantsTypesString);
+
+        }
+
+        if(noRestaurantsString != "") {
+
+            noRestaurants.setText(noRestaurantsString);
+
+        }
 
     }
 
