@@ -1,7 +1,9 @@
 package roadtrippr.roadtrippr;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -75,6 +77,17 @@ public class PageTwoActivity extends AppCompatActivity {
                 Log.i("Favorite Restaurants: ", str1);
                 Log.i("Favorite Types: ", str2);
                 Log.i("No Restaurants: ", str3);
+
+                // Create a Uri from an intent string. Use the result to create an Intent.
+                Uri gmmIntentUri = Uri.parse("geo:0,0?q=Niagara+Falls+NY");
+
+                // Create an Intent from gmmIntentUri. Set the action to ACTION_VIEW
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                // Make the Intent explicit by setting the Google Maps package
+                mapIntent.setPackage("com.google.android.apps.maps");
+
+                // Attempt to start an activity that can handle the Intent
+                startActivity(mapIntent);
 
             }
         });
