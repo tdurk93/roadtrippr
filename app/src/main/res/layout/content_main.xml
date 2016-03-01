@@ -57,10 +57,8 @@
         android:layout_height="wrap_content"
         android:text="Continue"
         android:id="@+id/button"
-        android:layout_gravity="right"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
+        android:layout_centerHorizontal="true"
         android:minHeight="75dp"
         android:minWidth="144dp"
         android:textSize="24sp" />
