@@ -11,17 +11,13 @@ import android.view.View;
 public class MainActivity extends AppCompatActivity {
 
     public void settingsActivity (View view) {
-
         Intent i = new Intent(getApplicationContext(), SettingsActivity.class);
         startActivity(i);
-
     }
 
     public void pageTwoActivity (View view) {
-
         Intent i = new Intent(getApplicationContext(), PageTwoActivity.class);
         startActivity(i);
-
     }
 
     @Override
@@ -30,8 +26,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        setTitle("RoadTrippr");
-
     }
 
     @Override

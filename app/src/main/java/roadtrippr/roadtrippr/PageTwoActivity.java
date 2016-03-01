@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -12,14 +13,15 @@ import android.widget.MultiAutoCompleteTextView;
 
 public class PageTwoActivity extends AppCompatActivity {
 
-    MultiAutoCompleteTextView favRestaurants, favTypes, noRestaurants;
-
     Button submitButton;
+    MultiAutoCompleteTextView favRestaurants, favTypes, noRestaurants;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_page_two);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         submitButton = (Button) findViewById(R.id.submitButton);
 
@@ -44,22 +46,16 @@ public class PageTwoActivity extends AppCompatActivity {
         noRestaurants.setAdapter(adapter);
         noRestaurants.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
 
-        if(favRestaurantsString != "") {
-
+        if (favRestaurantsString != "") {
             favRestaurants.setText(favRestaurantsString);
-
         }
 
-        if(favRestaurantsTypesString != "") {
-
+        if (favRestaurantsTypesString != "") {
             favTypes.setText(favRestaurantsTypesString);
-
         }
 
-        if(noRestaurantsString != "") {
-
+        if (noRestaurantsString != "") {
             noRestaurants.setText(noRestaurantsString);
-
         }
 
         submitButton.setOnClickListener(new View.OnClickListener() {

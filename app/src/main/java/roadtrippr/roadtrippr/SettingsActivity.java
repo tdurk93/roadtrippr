@@ -13,10 +13,8 @@ import android.widget.MultiAutoCompleteTextView;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    MultiAutoCompleteTextView favRestaurants, favTypes, noRestaurants;
-
     Button saveButton;
-
+    MultiAutoCompleteTextView favRestaurants, favTypes, noRestaurants;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,14 +30,12 @@ public class SettingsActivity extends AppCompatActivity {
         String favRestaurantsTypesString = sharedPreferences.getString("favRestaurantsTypes", "");
         String noRestaurantsString = sharedPreferences.getString("noRestaurants", "");
 
-
         favRestaurants = (MultiAutoCompleteTextView)findViewById(R.id.multiAutoCompleteTextView);
         favTypes = (MultiAutoCompleteTextView)findViewById(R.id.multiAutoCompleteTextView2);
         noRestaurants = (MultiAutoCompleteTextView)findViewById(R.id.multiAutoCompleteTextView3);
 
         ArrayAdapter adapter = ArrayAdapter.createFromResource(this, R.array.restaurants, android.R.layout.simple_list_item_1);
         ArrayAdapter adapter2 = ArrayAdapter.createFromResource(this, R.array.restaurants_types, android.R.layout.simple_list_item_1);
-
 
         favRestaurants.setAdapter(adapter);
         favRestaurants.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
@@ -53,7 +49,6 @@ public class SettingsActivity extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 String str1 = favRestaurants.getText().toString();
                 String str2 = favTypes.getText().toString();
                 String str3 = noRestaurants.getText().toString();
@@ -66,24 +61,17 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        if(favRestaurantsString != "") {
-
+        if (favRestaurantsString != "") {
             favRestaurants.setText(favRestaurantsString);
-
         }
 
-        if(favRestaurantsTypesString != "") {
-
+        if (favRestaurantsTypesString != "") {
             favTypes.setText(favRestaurantsTypesString);
-
         }
 
-        if(noRestaurantsString != "") {
-
+        if (noRestaurantsString != "") {
             noRestaurants.setText(noRestaurantsString);
-
         }
 
     }
-
 }

@@ -1,75 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:fitsSystemWindows="true"
     tools:context="roadtrippr.roadtrippr.PageTwoActivity">
 
-    <MultiAutoCompleteTextView
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/multiAutoCompleteTextView"
-        android:ems="10"
-        android:layout_below="@+id/textView3"
-        android:layout_alignParentStart="true" />
+        android:theme="@style/AppTheme.AppBarOverlay">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Favorite Restaurants"
-        android:id="@+id/textView3"
-        android:textColor="#000000"
-        android:textSize="20sp"
-        android:layout_marginTop="25dp"
-        android:layout_alignParentStart="true" />
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Favorite Restaurant Types"
-        android:id="@+id/textView4"
-        android:layout_below="@+id/multiAutoCompleteTextView"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="68dp"
-        android:textSize="20sp"
-        android:textColor="#000000" />
+    </android.support.design.widget.AppBarLayout>
 
-    <MultiAutoCompleteTextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/multiAutoCompleteTextView2"
-        android:layout_below="@+id/textView4"
-        android:layout_alignParentStart="true" />
+    <include layout="@layout/content_page_two" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Unacceptable Restaurants"
-        android:id="@+id/textView5"
-        android:layout_marginTop="77dp"
-        android:layout_below="@+id/multiAutoCompleteTextView2"
-        android:layout_alignParentStart="true"
-        android:textColor="#000000"
-        android:textSize="20sp" />
-
-    <MultiAutoCompleteTextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/multiAutoCompleteTextView3"
-        android:layout_below="@+id/textView5"
-        android:layout_alignParentStart="true" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Submit"
-        android:id="@+id/submitButton"
-        android:layout_below="@+id/multiAutoCompleteTextView3"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="33dp" />
-
-</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

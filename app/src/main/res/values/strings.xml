@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">RoadTrippr</string>
-    <string name="ExpressItinerary">Express Itinerary</string>
-    <string name="custom">Custom Itinerary</string>
     <string name="settings">Settings</string>
     <string name="title_activity_settings">Settings</string>
 
