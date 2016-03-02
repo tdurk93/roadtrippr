@@ -1,6 +1,8 @@
 package roadtrippr.roadtrippr;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -10,9 +12,10 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
-    public void settingsActivity (View view) {
-        Intent i = new Intent(getApplicationContext(), SettingsActivity.class);
-        startActivity(i);
+    public void mainActivity (View view) {
+        final SharedPreferences sharedPref = getSharedPreferences("roadtrippr.roadtrippr", Context.MODE_PRIVATE);
+        sharedPref.edit().putBoolean("showStatusScreen", false).apply();
+        setContentView(R.layout.activity_main);
     }
 
     public void pageTwoActivity (View view) {
@@ -23,9 +26,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
     }
 
     @Override
@@ -51,5 +52,23 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        final SharedPreferences sharedPref = getSharedPreferences("roadtrippr.roadtrippr", Context.MODE_PRIVATE);
+        Boolean showStatusScreen = sharedPref.getBoolean("showStatusScreen", false);
+
+        // Determine which screen to show
+        if (showStatusScreen) {
+            setContentView(R.layout.activity_status);
+        } else {
+            setContentView(R.layout.activity_main);
+        }
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
     }
 }

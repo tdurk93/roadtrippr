@@ -29,10 +29,10 @@ public class SettingsActivity extends AppCompatActivity {
 
         saveButton = (Button) findViewById(R.id.saveButton);
 
-        final SharedPreferences sharedPreferences = this.getSharedPreferences("roadtrippr.roadtrippr", Context.MODE_PRIVATE);
-        String favRestaurantsString = sharedPreferences.getString("favRestaurants", "");
-        String favRestaurantsTypesString = sharedPreferences.getString("favRestaurantsTypes", "");
-        String noRestaurantsString = sharedPreferences.getString("noRestaurants", "");
+        final SharedPreferences sharedPref = getSharedPreferences("roadtrippr.roadtrippr", Context.MODE_PRIVATE);
+        String favRestaurantsString = sharedPref.getString("favRestaurants", "");
+        String favRestaurantsTypesString = sharedPref.getString("favRestaurantsTypes", "");
+        String noRestaurantsString = sharedPref.getString("noRestaurants", "");
 
         favRestaurants = (MultiAutoCompleteTextView)findViewById(R.id.multiAutoCompleteTextView);
         favTypes = (MultiAutoCompleteTextView)findViewById(R.id.multiAutoCompleteTextView2);
@@ -58,9 +58,9 @@ public class SettingsActivity extends AppCompatActivity {
                 String str3 = noRestaurants.getText().toString();
                 Log.i("Input: ", str1);
 
-                sharedPreferences.edit().putString("favRestaurants", str1).apply();
-                sharedPreferences.edit().putString("favRestaurantsTypes", str2).apply();
-                sharedPreferences.edit().putString("noRestaurants", str3).apply();
+                sharedPref.edit().putString("favRestaurants", str1).apply();
+                sharedPref.edit().putString("favRestaurantsTypes", str2).apply();
+                sharedPref.edit().putString("noRestaurants", str3).apply();
 
             }
         });

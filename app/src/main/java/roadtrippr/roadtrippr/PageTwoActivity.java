@@ -68,7 +68,7 @@ public class PageTwoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                //TODO: Implement Next Activity & Calculate Trip
+                // TODO: Implement Next Activity & Calculate Trip
 
                 String str1 = favRestaurants.getText().toString();
                 String str2 = favTypes.getText().toString();
@@ -86,9 +86,12 @@ public class PageTwoActivity extends AppCompatActivity {
                 // Make the Intent explicit by setting the Google Maps package
                 mapIntent.setPackage("com.google.android.apps.maps");
 
-                // Attempt to start an activity that can handle the Intent
-                startActivity(mapIntent);
+                final SharedPreferences sharedPref = getSharedPreferences("roadtrippr.roadtrippr", Context.MODE_PRIVATE);
+                sharedPref.edit().putBoolean("showStatusScreen", true).apply();
 
+                // Attempt to start an activity that can handle the Intent
+                finish();
+                startActivity(mapIntent);
             }
         });
 
