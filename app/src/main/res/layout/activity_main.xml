@@ -21,6 +21,15 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_main" />
+    <ViewFlipper
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
+        android:id="@+id/viewflipper">
+
+        <include layout="@layout/content_main" />
+        <include layout="@layout/content_status" />
+
+    </ViewFlipper>
 
 </android.support.design.widget.CoordinatorLayout>

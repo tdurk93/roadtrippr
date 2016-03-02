@@ -9,13 +9,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ViewFlipper;
 
 public class MainActivity extends AppCompatActivity {
+    private ViewFlipper viewFlipper;
 
     public void mainActivity (View view) {
         final SharedPreferences sharedPref = getSharedPreferences("roadtrippr.roadtrippr", Context.MODE_PRIVATE);
-        sharedPref.edit().putBoolean("showStatusScreen", false).apply();
-        setContentView(R.layout.activity_main);
+        sharedPref.edit().putBoolean("navigating", false).apply();
+
+        viewFlipper = (ViewFlipper) findViewById(R.id.viewflipper);
+        viewFlipper.showPrevious();
     }
 
     public void pageTwoActivity (View view) {
@@ -26,7 +30,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        viewFlipper = (ViewFlipper) findViewById(R.id.viewflipper);
 
+        // Switch to status screen if navigating
+        final SharedPreferences sharedPref = getSharedPreferences("roadtrippr.roadtrippr", Context.MODE_PRIVATE);
+        Boolean navigating = sharedPref.getBoolean("navigating", false);
+        if (navigating) {
+            sharedPref.edit().putBoolean("toggleMainScreen", true).apply();
+        }
     }
 
     @Override
@@ -58,17 +70,18 @@ public class MainActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
 
+        viewFlipper = (ViewFlipper) findViewById(R.id.viewflipper);
         final SharedPreferences sharedPref = getSharedPreferences("roadtrippr.roadtrippr", Context.MODE_PRIVATE);
-        Boolean showStatusScreen = sharedPref.getBoolean("showStatusScreen", false);
+        Boolean toggleMainScreen = sharedPref.getBoolean("toggleMainScreen", false);
 
         // Determine which screen to show
-        if (showStatusScreen) {
-            setContentView(R.layout.activity_status);
-        } else {
-            setContentView(R.layout.activity_main);
+        if (toggleMainScreen) {
+            viewFlipper.showNext();
+            sharedPref.edit().putBoolean("toggleMainScreen", false).apply();
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
     }
+
 }

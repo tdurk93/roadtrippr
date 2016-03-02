@@ -86,8 +86,10 @@ public class PageTwoActivity extends AppCompatActivity {
                 // Make the Intent explicit by setting the Google Maps package
                 mapIntent.setPackage("com.google.android.apps.maps");
 
+                // Switch main activity to status screen
                 final SharedPreferences sharedPref = getSharedPreferences("roadtrippr.roadtrippr", Context.MODE_PRIVATE);
-                sharedPref.edit().putBoolean("showStatusScreen", true).apply();
+                sharedPref.edit().putBoolean("navigating", true).apply();
+                sharedPref.edit().putBoolean("toggleMainScreen", true).apply();
 
                 // Attempt to start an activity that can handle the Intent
                 finish();
