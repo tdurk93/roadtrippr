@@ -43,7 +43,7 @@ public class PageTwoActivity extends AppCompatActivity
 
     private PlaceAutocompleteAdapter mAdapter;
 
-    private AutoCompleteTextView mAutocompleteView;
+    private MultiAutoCompleteTextView mAutocompleteView;
 
     private static final LatLngBounds BOUNDS_GREATER_SYDNEY = new LatLngBounds(
             new LatLng(-34.041458, 150.790100), new LatLng(-33.682247, 151.383362));
@@ -145,7 +145,7 @@ public class PageTwoActivity extends AppCompatActivity
 
 
         // Retrieve the AutoCompleteTextView that will display Place suggestions.
-        mAutocompleteView = (AutoCompleteTextView)
+        mAutocompleteView = (MultiAutoCompleteTextView)
                 findViewById(R.id.autocomplete_places);
 
         // Register a listener that receives callbacks when a suggestion has been selected
@@ -155,6 +155,8 @@ public class PageTwoActivity extends AppCompatActivity
         // the entire world.
         mAdapter = new PlaceAutocompleteAdapter(this, mGoogleApiClient, BOUNDS_GREATER_SYDNEY,
                 null);
+
+        mAutocompleteView.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
         mAutocompleteView.setAdapter(mAdapter);
     }
 

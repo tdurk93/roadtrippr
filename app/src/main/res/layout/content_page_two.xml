@@ -30,10 +30,11 @@
                 android:layout_marginTop="20dp"
                 android:layout_alignParentStart="true" />
 
-            <AutoCompleteTextView
+            <MultiAutoCompleteTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/autocomplete_places" />
+                android:id="@+id/autocomplete_places"
+                android:layout_gravity="center_horizontal" />
 
             <MultiAutoCompleteTextView
                 android:layout_width="match_parent"
