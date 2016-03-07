@@ -14,13 +14,9 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.MultiAutoCompleteTextView;
-import android.widget.TextView;
 import android.widget.Toast;
-import java.util.ArrayList;
-import java.util.List;
 
 import roadtrippr.roadtrippr.logger.Log;
 
@@ -30,7 +26,6 @@ import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.AutocompletePrediction;
-import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
@@ -48,10 +43,8 @@ public class PageTwoActivity extends AppCompatActivity
 
     private AutocompleteFilter mAutocompleteFilter;
 
-    private MultiAutoCompleteTextView mAutocompleteView;
-
-    private static final LatLngBounds BOUNDS_GREATER_SYDNEY = new LatLngBounds(
-            new LatLng(-34.041458, 150.790100), new LatLng(-33.682247, 151.383362));
+    private static final LatLngBounds BOUNDS_ATLANTA = new LatLngBounds(
+            new LatLng(33.749249, -84.387314), new LatLng(33.749249, -84.387314));
 
     private static final String TAG = "PlaceAutocompleteAdapter";
 
@@ -87,8 +80,8 @@ public class PageTwoActivity extends AppCompatActivity
         mAutocompleteFilter = new AutocompleteFilter.Builder()
                 .setTypeFilter(AutocompleteFilter.TYPE_FILTER_ESTABLISHMENT)
                 .build();
-        mAdapter = new PlaceAutocompleteAdapter(this, mGoogleApiClient, BOUNDS_GREATER_SYDNEY,
-                mAutocompleteFilter);
+        mAdapter = new PlaceAutocompleteAdapter(this, mGoogleApiClient, BOUNDS_ATLANTA,
+                mAutocompleteFilter, true);
 
 
         favRestaurants = (MultiAutoCompleteTextView)findViewById(R.id.multiAutoCompleteTextView);
@@ -118,11 +111,6 @@ public class PageTwoActivity extends AppCompatActivity
         if (noRestaurantsString != "") {
             noRestaurants.setText(noRestaurantsString);
         }
-
-
-
-
-
 
 
         submitButton.setOnClickListener(new View.OnClickListener() {
@@ -160,13 +148,9 @@ public class PageTwoActivity extends AppCompatActivity
 
     }
 
-    private void setupAutocompleteTextViews() {
 
 
-
-
-
-    }
+    // ------------------- Google Places API -------------------
 
     /**
      * Listener that handles selections from suggestions from the AutoCompleteTextView that

@@ -98,16 +98,23 @@ public class PlaceAutocompleteAdapter
     private AutocompleteFilter mPlaceFilter;
 
     /**
+     * should return full text or primary text
+     */
+    private boolean returnPrimaryTextOnly;
+
+
+    /**
      * Initializes with a resource for text rows and autocomplete query bounds.
      *
      * @see android.widget.ArrayAdapter#ArrayAdapter(android.content.Context, int)
      */
     public PlaceAutocompleteAdapter(Context context, GoogleApiClient googleApiClient,
-                                    LatLngBounds bounds, AutocompleteFilter filter) {
+                                    LatLngBounds bounds, AutocompleteFilter filter, boolean retPrimaryTextOnly) {
         super(context, android.R.layout.simple_expandable_list_item_2, android.R.id.text1);
         mGoogleApiClient = googleApiClient;
         mBounds = bounds;
         mPlaceFilter = filter;
+        returnPrimaryTextOnly = retPrimaryTextOnly;
     }
 
     /**
@@ -189,7 +196,11 @@ public class PlaceAutocompleteAdapter
                 // Override this method to display a readable result in the AutocompleteTextView
                 // when clicked.
                 if (resultValue instanceof AutocompletePrediction) {
-                    return ((AutocompletePrediction) resultValue).getPrimaryText(null);
+                    if (returnPrimaryTextOnly) {
+                        return ((AutocompletePrediction) resultValue).getPrimaryText(null);
+                    }else {
+                        return ((AutocompletePrediction) resultValue).getFullText(null);
+                    }
                 } else {
                     return super.convertResultToString(resultValue);
                 }

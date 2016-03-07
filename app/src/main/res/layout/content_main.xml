@@ -12,23 +12,20 @@
     tools:context="roadtrippr.roadtrippr.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <EditText
+    <AutoCompleteTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/editText"
-        android:layout_gravity="center_horizontal"
-        android:hint="Start Location"
-        android:singleLine="true" />
+        android:id="@+id/startLocationAutoCompleteTextView"
+        android:layout_alignParentStart="false"
+        android:autoText="false"
+        android:hint="Start Location" />
 
-    <EditText
+    <AutoCompleteTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/editText2"
-        android:layout_gravity="center_horizontal"
-        android:hint="End Location"
-        android:layout_below="@+id/editText"
-        android:singleLine="true"
-        android:imeOptions="actionDone" />
+        android:id="@+id/endLocationAutoCompleteTextView"
+        android:layout_below="@+id/startLocationAutoCompleteTextView"
+        android:hint="End Location" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -36,7 +33,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Desired Meal Time:"
         android:id="@+id/textView2"
-        android:layout_below="@+id/editText2"
+        android:layout_below="@+id/endLocationAutoCompleteTextView"
         android:paddingBottom="0dp"
         android:paddingTop="24dp"
         android:paddingLeft="2dp" />
