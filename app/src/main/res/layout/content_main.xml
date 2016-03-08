@@ -16,18 +16,20 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <EditText
+    <AutoCompleteTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/startLocationField"
+        android:id="@+id/startLocationAutoCompleteTextView"
+        android:layout_alignParentStart="false"
+        android:autoText="false"
         android:hint="@string/start_location_label"
         android:imeOptions="actionNext"
         android:singleLine="true" />
 
-    <EditText
+    <AutoCompleteTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/endLocationField"
+        android:id="@+id/endLocationAutoCompleteTextView"
         android:hint="@string/end_location_label"
         android:singleLine="true"
         android:imeOptions="actionDone" />

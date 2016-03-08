@@ -14,10 +14,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.MultiAutoCompleteTextView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import roadtrippr.roadtrippr.logger.Log;
@@ -26,8 +24,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.AutocompletePrediction;
-import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
@@ -43,10 +41,10 @@ public class PageTwoActivity extends AppCompatActivity
 
     private PlaceAutocompleteAdapter mAdapter;
 
-    private AutoCompleteTextView mAutocompleteView;
+    private AutocompleteFilter mAutocompleteFilter;
 
-    private static final LatLngBounds BOUNDS_GREATER_SYDNEY = new LatLngBounds(
-            new LatLng(-34.041458, 150.790100), new LatLng(-33.682247, 151.383362));
+    private static final LatLngBounds BOUNDS_ATLANTA = new LatLngBounds(
+            new LatLng(33.749249, -84.387314), new LatLng(33.749249, -84.387314));
 
     private static final String TAG = "PlaceAutocompleteAdapter";
 
@@ -67,20 +65,39 @@ public class PageTwoActivity extends AppCompatActivity
         String favRestaurantsTypesString = sharedPreferences.getString("favRestaurantsTypes", "");
         String noRestaurantsString = sharedPreferences.getString("noRestaurants", "");
 
+        // Construct a GoogleApiClient for the {@link Places#GEO_DATA_API} using AutoManage
+        // functionality, which automatically sets up the API client to handle Activity lifecycle
+        // events. If your activity does not extend FragmentActivity, make sure to call connect()
+        // and disconnect() explicitly.
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, 0 /* clientId */, this)
+                .addApi(Places.GEO_DATA_API)
+                .build();
+
+
+        // Set up the adapter that will retrieve suggestions from the Places Geo Data API that cover
+        // the entire world.
+        mAutocompleteFilter = new AutocompleteFilter.Builder()
+                .setTypeFilter(AutocompleteFilter.TYPE_FILTER_ESTABLISHMENT)
+                .build();
+        mAdapter = new PlaceAutocompleteAdapter(this, mGoogleApiClient, BOUNDS_ATLANTA,
+                mAutocompleteFilter, true);
+
+
         favRestaurants = (MultiAutoCompleteTextView)findViewById(R.id.multiAutoCompleteTextView);
         favTypes = (MultiAutoCompleteTextView)findViewById(R.id.multiAutoCompleteTextView2);
         noRestaurants = (MultiAutoCompleteTextView)findViewById(R.id.multiAutoCompleteTextView3);
 
-        ArrayAdapter adapter = ArrayAdapter.createFromResource(this, R.array.restaurants, android.R.layout.simple_list_item_1);
-        ArrayAdapter adapter2 = ArrayAdapter.createFromResource(this, R.array.restaurants_types, android.R.layout.simple_list_item_1);
-
-        favRestaurants.setAdapter(adapter);
+        favRestaurants.setOnItemClickListener(mAutocompleteViewClickListener);
+        favRestaurants.setAdapter(mAdapter);
         favRestaurants.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
 
-        favTypes.setAdapter(adapter2);
+        ArrayAdapter favTypesAdapter = ArrayAdapter.createFromResource(this, R.array.restaurants_types, android.R.layout.simple_list_item_1);
+        favTypes.setAdapter(favTypesAdapter);
         favTypes.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
 
-        noRestaurants.setAdapter(adapter);
+        noRestaurants.setOnItemClickListener(mAutocompleteViewClickListener);
+        noRestaurants.setAdapter(mAdapter);
         noRestaurants.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
 
         if (favRestaurantsString != "") {
@@ -129,34 +146,11 @@ public class PageTwoActivity extends AppCompatActivity
             }
         });
 
-        // Setup an autocompleteTextView that uses Google Places API
-        setupAutocompleteTextViews();
     }
 
-    private void setupAutocompleteTextViews() {
-        // Construct a GoogleApiClient for the {@link Places#GEO_DATA_API} using AutoManage
-        // functionality, which automatically sets up the API client to handle Activity lifecycle
-        // events. If your activity does not extend FragmentActivity, make sure to call connect()
-        // and disconnect() explicitly.
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, 0 /* clientId */, this)
-                .addApi(Places.GEO_DATA_API)
-                .build();
 
 
-        // Retrieve the AutoCompleteTextView that will display Place suggestions.
-        mAutocompleteView = (AutoCompleteTextView)
-                findViewById(R.id.autocomplete_places);
-
-        // Register a listener that receives callbacks when a suggestion has been selected
-        mAutocompleteView.setOnItemClickListener(mAutocompleteViewClickListener);
-
-        // Set up the adapter that will retrieve suggestions from the Places Geo Data API that cover
-        // the entire world.
-        mAdapter = new PlaceAutocompleteAdapter(this, mGoogleApiClient, BOUNDS_GREATER_SYDNEY,
-                null);
-        mAutocompleteView.setAdapter(mAdapter);
-    }
+    // ------------------- Google Places API -------------------
 
     /**
      * Listener that handles selections from suggestions from the AutoCompleteTextView that
