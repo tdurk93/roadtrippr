@@ -2,8 +2,8 @@
     <string name="app_name">RoadTrippr</string>
     <string name="settings">Settings</string>
     <string name="title_activity_settings">Settings</string>
-    <string name="start_location">Start location</string>
-    <string name="end_location">End Location</string>
+    <string name="start_location_label">Start location</string>
+    <string name="end_location_label">End Location</string>
     <string name="meal_time_label">Desired meal time</string>
     <string name="continue_button_label">Continue</string>
     <string name="restaurants_label">Favorite Restaurants</string>
