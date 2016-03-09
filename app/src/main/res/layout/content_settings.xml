@@ -25,54 +25,50 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Favorite Restaurants"
-                android:id="@+id/textView3"
+                android:text="@string/restaurants_label"
+                android:id="@+id/restaurants_label"
                 android:layout_marginTop="20dp"
-                android:layout_alignParentStart="true" />
+                android:labelFor="@+id/restaurants_field" />
 
             <MultiAutoCompleteTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/multiAutoCompleteTextView"
-                android:layout_below="@+id/textView3"
-                android:layout_alignParentStart="true" />
+                android:id="@+id/restaurants_field"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Favorite Restaurant Types"
-                android:id="@+id/textView4"
-                android:layout_marginTop="56dp" />
+                android:text="@string/restaurant_types_label"
+                android:id="@+id/restaurant_types_label"
+                android:layout_marginTop="56dp"
+                android:labelFor="@+id/restaurant_types_field"/>
 
             <MultiAutoCompleteTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/multiAutoCompleteTextView2"
-                android:layout_below="@+id/textView4"
-                android:layout_alignParentStart="true" />
+                android:id="@+id/restaurant_types_field" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Unacceptable Restaurants"
-                android:id="@+id/textView5"
-                android:layout_marginTop="56dp" />
+                android:text="@string/unacceptable_restaurants_label"
+                android:id="@+id/unacceptable_restaurants_label"
+                android:layout_marginTop="56dp"
+                android:labelFor="@+id/unacceptable_restaurants_field"/>
 
             <MultiAutoCompleteTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/multiAutoCompleteTextView3"
-                android:layout_below="@+id/textView5"
+                android:id="@+id/unacceptable_restaurants_field"
                 android:imeOptions="actionDone" />
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Save"
+                android:text="@string/save_button_label"
                 android:id="@+id/saveButton"
-                android:layout_below="@+id/multiAutoCompleteTextView3"
                 android:minHeight="75dp"
                 android:minWidth="144dp"
                 android:textSize="24sp"
