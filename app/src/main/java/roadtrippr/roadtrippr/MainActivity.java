@@ -1,9 +1,12 @@
 package roadtrippr.roadtrippr;
 
+import java.util.Calendar;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -14,7 +17,8 @@ import android.widget.AdapterView;
 import android.widget.ViewFlipper;
 import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
-
+import android.widget.TimePicker;
+import android.widget.TextView;
 import roadtrippr.roadtrippr.logger.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -30,7 +34,8 @@ import com.google.android.gms.maps.model.LatLngBounds;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
     private ViewFlipper viewFlipper;
-
+    private TimePicker tp;
+    private CountDownTimer countdown;
     AutoCompleteTextView startLocationTextView, endLocationTextView;
 
     protected GoogleApiClient mGoogleApiClient;
@@ -73,6 +78,27 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         }
 
         setupAutocompleteTextViews();
+
+        //Calculate countdown time
+        tp = (TimePicker) findViewById(R.id.timePicker);
+        tp.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+            @Override
+            public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+
+                Calendar calendar = Calendar.getInstance();
+                int hour = Math.abs(hourOfDay - calendar.get(Calendar.HOUR_OF_DAY));
+                int min = minute - calendar.get(Calendar.MINUTE);
+                if (min < 0){
+                    min += 60;
+                    --hour;
+                }
+
+                long millsec = (hour*3600000)+(min*60000);
+                long interval = 60000;
+                countdown = new RemainingTime(millsec, interval).start();
+            }
+        });
+
     }
 
     @Override
@@ -254,4 +280,34 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 Toast.LENGTH_SHORT).show();
     }
 
+
+    public class RemainingTime extends CountDownTimer {
+
+        TextView countdown = (TextView) findViewById(R.id.countdown);
+
+
+        public RemainingTime(long start, long interval) {
+            super(start, interval);
+        }
+
+        public void onTick(long millisUntilFinished) {
+            int minutes = (int) ((millisUntilFinished / (1000*60)) % 60);
+            int hours   = (int) ((millisUntilFinished / (1000*60*60)) % 24);
+
+            if (hours == 0) {
+                countdown.setText(new StringBuilder().append(minutes).append(" min"));
+            } else {
+                countdown.setText(new StringBuilder().append(hours).append(" hr ").append(minutes).append(" min"));
+            }
+        }
+
+        public void onFinish() {
+            countdown.setText("Searching...");
+        }
+    }
+
+
+
 }
+
+
