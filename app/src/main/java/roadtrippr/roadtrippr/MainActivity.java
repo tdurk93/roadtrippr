@@ -2,11 +2,18 @@ package roadtrippr.roadtrippr;
 
 import java.util.Calendar;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -36,6 +43,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private ViewFlipper viewFlipper;
     private TimePicker tp;
     private CountDownTimer countdown;
+    private LocationManager locationManager;
+    private String provider;
+    private static final int LOCATION_REQUEST_CODE = 1;
+
     AutoCompleteTextView startLocationTextView, endLocationTextView;
 
     protected GoogleApiClient mGoogleApiClient;
@@ -49,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     private static final String TAG = "PlaceAutocompleteAdapter";
 
-    public void mainActivity (View view) {
+    public void mainActivity(View view) {
         final SharedPreferences sharedPref = getSharedPreferences("roadtrippr.roadtrippr", Context.MODE_PRIVATE);
         sharedPref.edit().putBoolean("navigating", false).apply();
 
@@ -59,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         viewFlipper.showPrevious();
     }
 
-    public void pageTwoActivity (View view) {
+    public void pageTwoActivity(View view) {
         Intent i = new Intent(getApplicationContext(), PageTwoActivity.class);
         startActivity(i);
     }
@@ -75,6 +86,39 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         Boolean navigating = sharedPref.getBoolean("navigating", false);
         if (navigating) {
             sharedPref.edit().putBoolean("toggleMainScreen", true).apply();
+        }
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        provider = locationManager.getBestProvider(new Criteria(), false);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(
+                this, Manifest.permission.ACCESS_COARSE_LOCATION
+        ) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION
+                    },
+                    LOCATION_REQUEST_CODE
+            );
+            return;
+        }
+        locationManager.requestLocationUpdates(provider, 400, 1, new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {}
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {}
+            @Override
+            public void onProviderEnabled(String provider) {}
+            @Override
+            public void onProviderDisabled(String provider) {}
+        });
+        Location location = locationManager.getLastKnownLocation(provider);
+        if (location != null) {
+            Log.i("Location Info", location.toString());
+        } else {
+            Log.i("Location Info", "Location failed to be found");
         }
 
         setupAutocompleteTextViews();
@@ -129,7 +173,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     @Override
     public void onResume() {
         super.onResume();
-
         viewFlipper = (ViewFlipper) findViewById(R.id.viewflipper);
         final SharedPreferences sharedPref = getSharedPreferences("roadtrippr.roadtrippr", Context.MODE_PRIVATE);
         Boolean toggleMainScreen = sharedPref.getBoolean("toggleMainScreen", false);
@@ -280,6 +323,48 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 Toast.LENGTH_SHORT).show();
     }
 
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == LOCATION_REQUEST_CODE) {
+            boolean accepted = true;
+            for (int i = 0; i < permissions.length; i++) {
+                if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                    accepted = false;
+                }
+            }
+            if (accepted) {
+                toastLocation();
+            }
+        }
+    }
+
+    public void toastLocation(View view) {
+        toastLocation();
+    }
+
+    private void toastLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(
+                this, Manifest.permission.ACCESS_COARSE_LOCATION
+        ) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION
+                    },
+                    LOCATION_REQUEST_CODE
+            );
+            return;
+        }
+        Location location = locationManager.getLastKnownLocation(provider);
+        if (location != null) {
+            Toast.makeText(getApplicationContext(), location.toString(), Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(getApplicationContext(), "No location found", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
     public class RemainingTime extends CountDownTimer {
 
@@ -289,6 +374,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         public RemainingTime(long start, long interval) {
             super(start, interval);
         }
+
 
         public void onTick(long millisUntilFinished) {
             int minutes = (int) ((millisUntilFinished / (1000*60)) % 60);
