@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         setupAutocompleteTextViews();
 
         //Calculate countdown time
-        tp = (TimePicker) findViewById(R.id.timePicker);
+        tp = (TimePicker) findViewById(R.id.mealTimePicker);
         tp.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
             @Override
             public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
