@@ -33,7 +33,9 @@
             <MultiAutoCompleteTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/restaurants_field"/>
+                android:id="@+id/restaurants_field"
+                android:imeOptions="actionNext"
+                android:singleLine="true" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -47,7 +49,9 @@
             <MultiAutoCompleteTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/restaurant_types_field" />
+                android:id="@+id/restaurant_types_field"
+                android:imeOptions="actionNext"
+                android:singleLine="true" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -62,7 +66,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/unacceptable_restaurants_field"
-                android:imeOptions="actionDone" />
+                android:imeOptions="actionDone"
+                android:singleLine="true" />
 
             <Button
                 android:layout_width="wrap_content"
