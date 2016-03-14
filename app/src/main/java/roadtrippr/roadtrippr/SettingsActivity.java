@@ -34,9 +34,9 @@ public class SettingsActivity extends AppCompatActivity {
         String favRestaurantsTypesString = sharedPref.getString("favRestaurantsTypes", "");
         String noRestaurantsString = sharedPref.getString("noRestaurants", "");
 
-        favRestaurants = (MultiAutoCompleteTextView)findViewById(R.id.multiAutoCompleteTextView);
-        favTypes = (MultiAutoCompleteTextView)findViewById(R.id.multiAutoCompleteTextView2);
-        noRestaurants = (MultiAutoCompleteTextView)findViewById(R.id.multiAutoCompleteTextView3);
+        favRestaurants = (MultiAutoCompleteTextView)findViewById(R.id.restaurants_field);
+        favTypes = (MultiAutoCompleteTextView)findViewById(R.id.restaurant_types_field);
+        noRestaurants = (MultiAutoCompleteTextView)findViewById(R.id.unacceptable_restaurants_field);
 
         ArrayAdapter adapter = ArrayAdapter.createFromResource(this, R.array.restaurants, android.R.layout.simple_list_item_1);
         ArrayAdapter adapter2 = ArrayAdapter.createFromResource(this, R.array.restaurants_types, android.R.layout.simple_list_item_1);
