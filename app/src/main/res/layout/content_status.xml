@@ -55,10 +55,10 @@
         android:minHeight="75dp"
         android:minWidth="144dp"
         android:textSize="24sp"
-        android:onClick="mainActivity"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:onClick="cancelButton" />
 
     <EditText
         android:layout_width="wrap_content"

@@ -3,6 +3,7 @@ package roadtrippr.roadtrippr;
 import java.util.Calendar;
 
 import android.Manifest;
+import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -39,7 +40,7 @@ import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
-public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, CancelNavigationFragment.CancelNavigationListener {
     private ViewFlipper viewFlipper;
     private TimePicker tp;
     private CountDownTimer countdown;
@@ -60,7 +61,18 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     private static final String TAG = "PlaceAutocompleteAdapter";
 
-    public void mainActivity(View view) {
+    public void pageTwoActivity(View view) {
+        Intent i = new Intent(getApplicationContext(), PageTwoActivity.class);
+        startActivity(i);
+    }
+
+    public void cancelButton(View view) {
+        DialogFragment newFragment = new CancelNavigationFragment();
+        newFragment.show(getFragmentManager(), "cancel");
+    }
+
+    @Override
+    public void onCancelNavigation(DialogFragment dialog) {
         final SharedPreferences sharedPref = getSharedPreferences("roadtrippr.roadtrippr", Context.MODE_PRIVATE);
         sharedPref.edit().putBoolean("navigating", false).apply();
 
@@ -68,11 +80,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         viewFlipper.setInAnimation(AnimationUtils.loadAnimation(this, android.R.anim.slide_in_left));
         viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(this, android.R.anim.slide_out_right));
         viewFlipper.showPrevious();
-    }
-
-    public void pageTwoActivity(View view) {
-        Intent i = new Intent(getApplicationContext(), PageTwoActivity.class);
-        startActivity(i);
     }
 
     @Override
@@ -216,15 +223,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     }
 
-    /**
-     * Listener that handles selections from suggestions from the AutoCompleteTextView that
-     * displays Place suggestions.
-     * Gets the place id of the selected item and issues a request to the Places Geo Data API
-     * to retrieve more details about the place.
-     *
-     * @see com.google.android.gms.location.places.GeoDataApi#getPlaceById(com.google.android.gms.common.api.GoogleApiClient,
-     * String...)
-     */
     private AdapterView.OnItemClickListener mAutocompleteViewClickListener
             = new AdapterView.OnItemClickListener() {
         @Override
@@ -268,41 +266,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 places.release();
                 return;
             }
-            /*
-            // Get the Place object from the buffer.
-            final Place place = places.get(0);
-
-            // Format details of the place for display and show it in a TextView.
-            mPlaceDetailsText.setText(formatPlaceDetails(getResources(), place.getName(),
-                    place.getId(), place.getAddress(), place.getPhoneNumber(),
-                    place.getWebsiteUri()));
-
-            // Display the third party attributions if set.
-            final CharSequence thirdPartyAttribution = places.getAttributions();
-            if (thirdPartyAttribution == null) {
-                mPlaceDetailsAttribution.setVisibility(View.GONE);
-            } else {
-                mPlaceDetailsAttribution.setVisibility(View.VISIBLE);
-                mPlaceDetailsAttribution.setText(Html.fromHtml(thirdPartyAttribution.toString()));
-            }
-
-            Log.i(TAG, "Place details received: " + place.getName());
-
-            places.release();
-            */
         }
     };
-
-    /*
-    private static Spanned formatPlaceDetails(Resources res, CharSequence name, String id,
-                                              CharSequence address, CharSequence phoneNumber, Uri websiteUri) {
-        Log.e(TAG, res.getString(R.string.place_details, name, id, address, phoneNumber,
-                websiteUri));
-        return Html.fromHtml(res.getString(R.string.place_details, name, id, address, phoneNumber,
-                websiteUri));
-
-    }
-    */
 
     /**
      * Called when the Activity could not connect to Google Play services and the auto manager
@@ -365,7 +330,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         }
     }
 
-
     public class RemainingTime extends CountDownTimer {
 
         TextView countdown = (TextView) findViewById(R.id.countdown);
@@ -391,8 +355,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             countdown.setText("Searching...");
         }
     }
-
-
 
 }
 
