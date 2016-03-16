@@ -14,6 +14,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private LocationManager locationManager;
     private String provider;
     private static final int LOCATION_REQUEST_CODE = 1;
+    private static final int SETUP_LOCATION_CODE = 2;
     private static final String YOUR_LOCATION = "Your location";
 
     AutoCompleteTextView startLocationTextView, endLocationTextView;
@@ -65,7 +67,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private static final String TAG = "PlaceAutocompleteAdapter";
 
     public void onContinueClicked(View view) {
-        if (startLocationTextView.getText().toString().equals(YOUR_LOCATION)) {
+        if (startLocationTextView.getText() != null &&
+                startLocationTextView.getText().toString().equals(YOUR_LOCATION)) {
             // TODO: use currentLocation for route
         } else {
             // TODO: search Maps for location and use that for route
@@ -102,41 +105,20 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         if (navigating) {
             sharedPref.edit().putBoolean("toggleMainScreen", true).apply();
         }
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        provider = locationManager.getBestProvider(new Criteria(), false);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(
-                this, Manifest.permission.ACCESS_COARSE_LOCATION
-        ) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                    this,
-                    new String[]{
-                            Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_COARSE_LOCATION
-                    },
-                    LOCATION_REQUEST_CODE
-            );
-            return;
-        }
-        locationManager.requestLocationUpdates(provider, 400, 1, new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {}
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {}
-            @Override
-            public void onProviderEnabled(String provider) {}
-            @Override
-            public void onProviderDisabled(String provider) {}
-        });
-        currentLocation = locationManager.getLastKnownLocation(provider);
-        if (currentLocation != null) {
-            Log.i("Location Info", currentLocation.toString());
-        } else {
-            Log.i("Location Info", "Location failed to be found");
-        }
 
-        setupAutocompleteTextViews();
+        // Construct a GoogleApiClient for the {@link Places#GEO_DATA_API} using AutoManage
+        // functionality, which automatically sets up the API client to handle Activity lifecycle
+        // events. If your activity does not extend FragmentActivity, make sure to call connect()
+        // and disconnect() explicitly.
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, 0 /* clientId */, this)
+                .addApi(Places.GEO_DATA_API)
+                .build();
+
+        // Run setupLocation twice if permission isn't already granted
+        if (!setupLocation()) {
+            setupLocation();
+        }
 
         //Calculate countdown time
         tp = (TimePicker) findViewById(R.id.mealTimePicker);
@@ -205,14 +187,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     // ------------------- Google Places API -------------------
 
     public void setupAutocompleteTextViews() {
-        // Construct a GoogleApiClient for the {@link Places#GEO_DATA_API} using AutoManage
-        // functionality, which automatically sets up the API client to handle Activity lifecycle
-        // events. If your activity does not extend FragmentActivity, make sure to call connect()
-        // and disconnect() explicitly.
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, 0 /* clientId */, this)
-                .addApi(Places.GEO_DATA_API)
-                .build();
 
 
         // Set up the adapter that will retrieve suggestions from the Places Geo Data API that cover
@@ -240,6 +214,44 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         endLocationTextView.setOnItemClickListener(mAutocompleteViewClickListener);
         endLocationTextView.setAdapter(mAdapter);
 
+    }
+
+    private boolean setupLocation() {
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        provider = locationManager.getBestProvider(new Criteria(), false);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(
+                this, Manifest.permission.ACCESS_COARSE_LOCATION
+        ) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION
+                    },
+                    SETUP_LOCATION_CODE
+            );
+            return false;
+        }
+        locationManager.requestLocationUpdates(provider, 400, 1, new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {}
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {}
+            @Override
+            public void onProviderEnabled(String provider) {}
+            @Override
+            public void onProviderDisabled(String provider) {}
+        });
+        currentLocation = locationManager.getLastKnownLocation(provider);
+        if (currentLocation != null) {
+            Log.i("Location Info", currentLocation.toString());
+        } else {
+            Log.i("Location Info", "Location failed to be found");
+        }
+        setupAutocompleteTextViews();
+        return true;
     }
 
     private AdapterView.OnItemClickListener mAutocompleteViewClickListener
@@ -307,15 +319,29 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 Toast.LENGTH_SHORT).show();
     }
 
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == LOCATION_REQUEST_CODE) {
+    @Override
+    public void onRequestPermissionsResult(
+            int requestCode,
+            @NonNull String[] permissions,
+            @NonNull int[] grantResults
+    ) {
+        if (requestCode == SETUP_LOCATION_CODE || requestCode == LOCATION_REQUEST_CODE) {
             boolean accepted = true;
             for (int i = 0; i < permissions.length; i++) {
                 if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
                     accepted = false;
                 }
             }
-            if (accepted) {
+            if (!accepted) {
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Roadtrippr cannot function without your location. " +
+                                "Please grant it permission to use it to continue.",
+                        Toast.LENGTH_LONG
+                ).show();
+            } else if (requestCode == SETUP_LOCATION_CODE){
+                setupLocation();
+            } else {
                 toastLocation();
             }
         }
@@ -340,6 +366,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     LOCATION_REQUEST_CODE
             );
             return;
+        }
+        if (provider == null) {
+            provider = locationManager.getBestProvider(new Criteria(), false);
         }
         currentLocation = locationManager.getLastKnownLocation(provider);
         if (currentLocation != null) {
