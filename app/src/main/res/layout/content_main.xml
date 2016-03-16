@@ -61,6 +61,6 @@
         android:minHeight="75dp"
         android:minWidth="144dp"
         android:textSize="24sp"
-        android:onClick="pageTwoActivity"
+        android:onClick="onContinueClicked"
         android:layout_gravity="center_horizontal|bottom" />
 </FrameLayout>

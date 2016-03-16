@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private LocationManager locationManager;
     private String provider;
     private static final int LOCATION_REQUEST_CODE = 1;
+    private static final String YOUR_LOCATION = "Your location";
 
     AutoCompleteTextView startLocationTextView, endLocationTextView;
 
@@ -56,12 +57,19 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     private AutocompleteFilter mAutocompleteFilter;
 
+    private Location currentLocation;
+
     private static final LatLngBounds BOUNDS_ATLANTA = new LatLngBounds(
             new LatLng(33.749249, -84.387314), new LatLng(33.749249, -84.387314));
 
     private static final String TAG = "PlaceAutocompleteAdapter";
 
-    public void pageTwoActivity(View view) {
+    public void onContinueClicked(View view) {
+        if (startLocationTextView.getText().toString().equals(YOUR_LOCATION)) {
+            // TODO: use currentLocation for route
+        } else {
+            // TODO: search Maps for location and use that for route
+        }
         Intent i = new Intent(getApplicationContext(), PageTwoActivity.class);
         startActivity(i);
     }
@@ -121,9 +129,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             @Override
             public void onProviderDisabled(String provider) {}
         });
-        Location location = locationManager.getLastKnownLocation(provider);
-        if (location != null) {
-            Log.i("Location Info", location.toString());
+        currentLocation = locationManager.getLastKnownLocation(provider);
+        if (currentLocation != null) {
+            Log.i("Location Info", currentLocation.toString());
         } else {
             Log.i("Location Info", "Location failed to be found");
         }
@@ -214,6 +222,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
         startLocationTextView = (AutoCompleteTextView)findViewById(R.id.startLocationAutoCompleteTextView);
         endLocationTextView = (AutoCompleteTextView)findViewById(R.id.endLocationAutoCompleteTextView);
+
+        if (currentLocation != null) {
+            startLocationTextView.setText(YOUR_LOCATION);
+        } else {
+            Toast.makeText(
+                    getApplicationContext(),
+                    "Failed to find current location. Please grant Roadtrippr permission " +
+                            "to use your location and make sure GPS is enabled",
+                    Toast.LENGTH_LONG
+            ).show();
+        }
 
         startLocationTextView.setOnItemClickListener(mAutocompleteViewClickListener);
         startLocationTextView.setAdapter(mAdapter);
@@ -322,9 +341,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             );
             return;
         }
-        Location location = locationManager.getLastKnownLocation(provider);
-        if (location != null) {
-            Toast.makeText(getApplicationContext(), location.toString(), Toast.LENGTH_LONG).show();
+        currentLocation = locationManager.getLastKnownLocation(provider);
+        if (currentLocation != null) {
+            Toast.makeText(getApplicationContext(), currentLocation.toString(), Toast.LENGTH_LONG).show();
         } else {
             Toast.makeText(getApplicationContext(), "No location found", Toast.LENGTH_SHORT).show();
         }
