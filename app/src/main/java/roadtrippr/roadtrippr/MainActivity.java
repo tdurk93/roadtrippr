@@ -52,6 +52,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private static final String YOUR_LOCATION = "Your location";
 
     AutoCompleteTextView startLocationTextView, endLocationTextView;
+    TextView userFavoriteRestaurants;
+
 
     protected GoogleApiClient mGoogleApiClient;
 
@@ -65,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             new LatLng(33.749249, -84.387314), new LatLng(33.749249, -84.387314));
 
     private static final String TAG = "PlaceAutocompleteAdapter";
+
+    String[] distance;
 
     public void onContinueClicked(View view) {
         if (startLocationTextView.getText() != null &&
@@ -105,6 +109,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         if (navigating) {
             sharedPref.edit().putBoolean("toggleMainScreen", true).apply();
         }
+
+        distance = new String[] {"(2 Miles)","(7 Miles)","(13 Miles)"};
+        final SharedPreferences sharedPreferences = this.getSharedPreferences("roadtrippr.roadtrippr", Context.MODE_PRIVATE);
+        String favRestaurantsString = sharedPreferences.getString("favRestaurants", "");
+        String[] favRestaurantsArray = favRestaurantsString.split(", ");
+        favRestaurantsString = "";
+        for(int i = 0; i < favRestaurantsArray.length; i++){
+            favRestaurantsString += favRestaurantsArray[i] + " " + distance[i] + "\n";
+        }
+        userFavoriteRestaurants = (TextView) findViewById(R.id.userFavoriteRestaurants);
+        userFavoriteRestaurants.setText(favRestaurantsString);
 
         // Construct a GoogleApiClient for the {@link Places#GEO_DATA_API} using AutoManage
         // functionality, which automatically sets up the API client to handle Activity lifecycle
