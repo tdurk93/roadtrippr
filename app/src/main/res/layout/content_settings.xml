@@ -14,7 +14,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/scrollView">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -27,7 +28,7 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="@string/restaurants_label"
                 android:id="@+id/restaurants_label"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="5dp"
                 android:labelFor="@+id/restaurants_field" />
 
             <MultiAutoCompleteTextView
@@ -43,7 +44,7 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="@string/restaurant_types_label"
                 android:id="@+id/restaurant_types_label"
-                android:layout_marginTop="56dp"
+                android:layout_marginTop="25dp"
                 android:labelFor="@+id/restaurant_types_field"/>
 
             <MultiAutoCompleteTextView
@@ -59,7 +60,7 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="@string/unacceptable_restaurants_label"
                 android:id="@+id/unacceptable_restaurants_label"
-                android:layout_marginTop="56dp"
+                android:layout_marginTop="25dp"
                 android:labelFor="@+id/unacceptable_restaurants_field"/>
 
             <MultiAutoCompleteTextView
@@ -69,6 +70,24 @@
                 android:imeOptions="actionDone"
                 android:singleLine="true" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Set Eatting Window (+/-):"
+                android:id="@+id/textView6"
+                android:layout_marginTop="25dp" />
+
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/time_window"
+                android:entries="@array/times"
+                android:spinnerMode="dialog"
+                android:layout_above="@+id/saveButton"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="10dp" />
+
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -77,11 +96,12 @@
                 android:minHeight="75dp"
                 android:minWidth="144dp"
                 android:textSize="24sp"
-                android:layout_marginTop="32dp"
-                android:layout_gravity="center_horizontal" />
+                android:layout_gravity="center_horizontal"
+                android:layout_alignBottom="@+id/scrollView"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="65dp" />
 
         </LinearLayout>
     </ScrollView>
-
 
 </RelativeLayout>
