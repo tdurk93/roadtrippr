@@ -11,11 +11,13 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.MultiAutoCompleteTextView;
+import android.widget.Spinner;
 
 public class SettingsActivity extends AppCompatActivity {
 
     Button saveButton;
     MultiAutoCompleteTextView favRestaurants, favTypes, noRestaurants;
+    Spinner timeWindow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,13 +35,16 @@ public class SettingsActivity extends AppCompatActivity {
         String favRestaurantsString = sharedPref.getString("favRestaurants", "");
         String favRestaurantsTypesString = sharedPref.getString("favRestaurantsTypes", "");
         String noRestaurantsString = sharedPref.getString("noRestaurants", "");
+        String timeWindowString = sharedPref.getString("timeWindow", "");
 
         favRestaurants = (MultiAutoCompleteTextView)findViewById(R.id.restaurants_field);
         favTypes = (MultiAutoCompleteTextView)findViewById(R.id.restaurant_types_field);
         noRestaurants = (MultiAutoCompleteTextView)findViewById(R.id.unacceptable_restaurants_field);
+        timeWindow = (Spinner) findViewById(R.id.time_window);
 
         ArrayAdapter adapter = ArrayAdapter.createFromResource(this, R.array.restaurants, android.R.layout.simple_list_item_1);
         ArrayAdapter adapter2 = ArrayAdapter.createFromResource(this, R.array.restaurants_types, android.R.layout.simple_list_item_1);
+        ArrayAdapter<CharSequence> adapter3 = ArrayAdapter.createFromResource(this, R.array.times, android.R.layout.simple_spinner_item);
 
         favRestaurants.setAdapter(adapter);
         favRestaurants.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
@@ -56,11 +61,13 @@ public class SettingsActivity extends AppCompatActivity {
                 String str1 = favRestaurants.getText().toString();
                 String str2 = favTypes.getText().toString();
                 String str3 = noRestaurants.getText().toString();
+                String str4 = timeWindow.getSelectedItem().toString();
                 Log.i("Input: ", str1);
 
                 sharedPref.edit().putString("favRestaurants", str1).apply();
                 sharedPref.edit().putString("favRestaurantsTypes", str2).apply();
                 sharedPref.edit().putString("noRestaurants", str3).apply();
+                sharedPref.edit().putString("timeWindow", str4).apply();
 
             }
         });
@@ -75,6 +82,11 @@ public class SettingsActivity extends AppCompatActivity {
 
         if (noRestaurantsString != "") {
             noRestaurants.setText(noRestaurantsString);
+        }
+
+        if (timeWindowString != "") {
+            int spinnerPosition = adapter3.getPosition(timeWindowString);
+            timeWindow.setSelection(spinnerPosition);
         }
 
     }
