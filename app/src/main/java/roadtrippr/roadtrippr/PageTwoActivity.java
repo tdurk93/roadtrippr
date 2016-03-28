@@ -51,6 +51,7 @@ public class PageTwoActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_page_two);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -128,7 +129,7 @@ public class PageTwoActivity extends AppCompatActivity
                 Log.i("No Restaurants: ", str3);
 
                 // Create a Uri from an intent string. Use the result to create an Intent.
-                Uri gmmIntentUri = Uri.parse("geo:0,0?q=Niagara+Falls+NY");
+                Uri gmmIntentUri = Uri.parse("google.navigation:q=" + Uri.encode(getIntent().getStringExtra("destination")));
 
                 // Create an Intent from gmmIntentUri. Set the action to ACTION_VIEW
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);

@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private static final int LOCATION_REQUEST_CODE = 1;
     private static final int SETUP_LOCATION_CODE = 2;
     private static final String YOUR_LOCATION = "Your location";
+    private String destination = "Atlanta, GA";
 
     AutoCompleteTextView startLocationTextView, endLocationTextView;
     TextView userFavoriteRestaurants;
@@ -77,7 +78,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         } else {
             // TODO: search Maps for location and use that for route
         }
+
         Intent i = new Intent(getApplicationContext(), PageTwoActivity.class);
+        if (!endLocationTextView.getText().toString().equals("")) {
+            destination = endLocationTextView.getText().toString();
+        }
+        i.putExtra("destination", destination);
+
         startActivity(i);
     }
 
