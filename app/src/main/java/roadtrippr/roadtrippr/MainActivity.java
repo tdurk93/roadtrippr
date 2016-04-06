@@ -72,13 +72,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     String[] distance;
 
     public void onContinueClicked(View view) {
-        if (startLocationTextView.getText() != null &&
-                startLocationTextView.getText().toString().equals(YOUR_LOCATION)) {
-            // TODO: use currentLocation for route
-        } else {
-            // TODO: search Maps for location and use that for route
-        }
-
         Intent i = new Intent(getApplicationContext(), PageTwoActivity.class);
         if (!endLocationTextView.getText().toString().equals("")) {
             destination = endLocationTextView.getText().toString();
@@ -219,7 +212,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         mAdapter = new PlaceAutocompleteAdapter(this, mGoogleApiClient, BOUNDS_ATLANTA,
                 null, false);
 
-        startLocationTextView = (AutoCompleteTextView)findViewById(R.id.startLocationAutoCompleteTextView);
         endLocationTextView = (AutoCompleteTextView)findViewById(R.id.endLocationAutoCompleteTextView);
 
         if (currentLocation != null) {
@@ -232,9 +224,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     Toast.LENGTH_LONG
             ).show();
         }
-
-        startLocationTextView.setOnItemClickListener(mAutocompleteViewClickListener);
-        startLocationTextView.setAdapter(mAdapter);
 
         endLocationTextView.setOnItemClickListener(mAutocompleteViewClickListener);
         endLocationTextView.setAdapter(mAdapter);
