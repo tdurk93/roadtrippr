@@ -49,10 +49,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private String provider;
     private static final int LOCATION_REQUEST_CODE = 1;
     private static final int SETUP_LOCATION_CODE = 2;
-    private static final String YOUR_LOCATION = "Your location";
     private String destination = "Atlanta, GA";
 
-    AutoCompleteTextView startLocationTextView, endLocationTextView;
+    AutoCompleteTextView endLocationTextView;
     TextView userFavoriteRestaurants;
 
 
@@ -133,10 +132,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 .addApi(Places.GEO_DATA_API)
                 .build();
 
-        // Run setupLocation twice if permission isn't already granted
-        if (!setupLocation()) {
-            setupLocation();
-        }
+        setupLocation(true);
 
         //Calculate countdown time
         tp = (TimePicker) findViewById(R.id.mealTimePicker);
@@ -214,23 +210,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
         endLocationTextView = (AutoCompleteTextView)findViewById(R.id.endLocationAutoCompleteTextView);
 
-        if (currentLocation != null) {
-            startLocationTextView.setText(YOUR_LOCATION);
-        } else {
-            Toast.makeText(
-                    getApplicationContext(),
-                    "Failed to find current location. Please grant Roadtrippr permission " +
-                            "to use your location and make sure GPS is enabled",
-                    Toast.LENGTH_LONG
-            ).show();
-        }
-
         endLocationTextView.setOnItemClickListener(mAutocompleteViewClickListener);
         endLocationTextView.setAdapter(mAdapter);
 
     }
 
-    private boolean setupLocation() {
+    private void setupLocation(boolean askPermission) {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         provider = locationManager.getBestProvider(new Criteria(), false);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -238,15 +223,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 && ActivityCompat.checkSelfPermission(
                 this, Manifest.permission.ACCESS_COARSE_LOCATION
         ) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                    this,
-                    new String[]{
-                            Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_COARSE_LOCATION
-                    },
-                    SETUP_LOCATION_CODE
-            );
-            return false;
+            if (askPermission) {
+                ActivityCompat.requestPermissions(
+                        this,
+                        new String[]{
+                                Manifest.permission.ACCESS_FINE_LOCATION,
+                                Manifest.permission.ACCESS_COARSE_LOCATION
+                        },
+                        SETUP_LOCATION_CODE
+                );
+            }
+            return;
         }
         locationManager.requestLocationUpdates(provider, 400, 1, new LocationListener() {
             @Override
@@ -265,7 +252,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             Log.i("Location Info", "Location failed to be found");
         }
         setupAutocompleteTextViews();
-        return true;
     }
 
     private AdapterView.OnItemClickListener mAutocompleteViewClickListener
@@ -354,7 +340,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                         Toast.LENGTH_LONG
                 ).show();
             } else if (requestCode == SETUP_LOCATION_CODE){
-                setupLocation();
+                setupLocation(false);
             } else {
                 toastLocation();
             }
