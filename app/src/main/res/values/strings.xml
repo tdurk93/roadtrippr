@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">RoadTrippr</string>
+    <string name="google_app_id">635253832970</string>
     <string name="settings">Settings</string>
     <string name="title_activity_settings">Settings</string>
     <string name="start_location_label">Start location</string>
