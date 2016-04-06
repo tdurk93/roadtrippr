@@ -11,13 +11,14 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.MultiAutoCompleteTextView;
+import android.widget.NumberPicker;
 import android.widget.Spinner;
 
 public class SettingsActivity extends AppCompatActivity {
 
     Button saveButton;
     MultiAutoCompleteTextView favRestaurants, favTypes, noRestaurants;
-    Spinner timeWindow;
+    NumberPicker timeWindow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +41,11 @@ public class SettingsActivity extends AppCompatActivity {
         favRestaurants = (MultiAutoCompleteTextView)findViewById(R.id.restaurants_field);
         favTypes = (MultiAutoCompleteTextView)findViewById(R.id.restaurant_types_field);
         noRestaurants = (MultiAutoCompleteTextView)findViewById(R.id.unacceptable_restaurants_field);
-        timeWindow = (Spinner) findViewById(R.id.time_window);
+
+        timeWindow = (NumberPicker) findViewById(R.id.eating_window_picker);
+        timeWindow.setMinValue(0);
+        timeWindow.setMaxValue(11);
+        timeWindow.setDisplayedValues(new String[]{"0", "5", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55"});
 
         ArrayAdapter adapter = ArrayAdapter.createFromResource(this, R.array.restaurants, android.R.layout.simple_list_item_1);
         ArrayAdapter adapter2 = ArrayAdapter.createFromResource(this, R.array.restaurants_types, android.R.layout.simple_list_item_1);
@@ -61,7 +66,7 @@ public class SettingsActivity extends AppCompatActivity {
                 String str1 = favRestaurants.getText().toString();
                 String str2 = favTypes.getText().toString();
                 String str3 = noRestaurants.getText().toString();
-                String str4 = timeWindow.getSelectedItem().toString();
+                String str4 = String.valueOf(timeWindow.getValue());
                 Log.i("Input: ", str1);
 
                 sharedPref.edit().putString("favRestaurants", str1).apply();
@@ -85,8 +90,9 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         if (timeWindowString != "") {
-            int spinnerPosition = adapter3.getPosition(timeWindowString);
-            timeWindow.setSelection(spinnerPosition);
+            timeWindow.setValue(Integer.valueOf(timeWindowString));
+        } else {
+            timeWindow.setValue(1);
         }
 
     }
