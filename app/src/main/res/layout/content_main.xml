@@ -19,16 +19,6 @@
     <AutoCompleteTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/startLocationAutoCompleteTextView"
-        android:layout_alignParentStart="false"
-        android:autoText="false"
-        android:hint="@string/start_location_label"
-        android:imeOptions="actionNext"
-        android:singleLine="true" />
-
-    <AutoCompleteTextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:id="@+id/endLocationAutoCompleteTextView"
         android:hint="@string/end_location_label"
         android:imeOptions="actionDone"
@@ -42,7 +32,8 @@
         android:id="@+id/mealTimeLabel"
         android:labelFor="@+id/mealTimePicker"
         android:layout_gravity="center"
-        android:textSize="@dimen/abc_text_size_display_1_material" />
+        android:textSize="@dimen/abc_text_size_display_1_material"
+        android:paddingTop="30dp" />
 
     <TimePicker
         android:layout_width="wrap_content"

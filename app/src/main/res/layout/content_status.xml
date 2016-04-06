@@ -40,11 +40,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="View Nearby Restaurants"
-        android:id="@+id/button"
+        android:id="@+id/viewRestaurantsButton"
         android:textSize="14sp"
-        android:onClick="toastLocation"
         android:layout_above="@+id/button2"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:onClick="viewRestaurants" />
 
     <Button
         android:layout_width="wrap_content"
@@ -77,7 +77,7 @@
         android:layout_below="@+id/textView2"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:layout_above="@+id/button"
+        android:layout_above="@+id/viewRestaurantsButton"
         android:textSize="20sp" />
 
     <ImageButton
