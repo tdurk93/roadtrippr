@@ -12,6 +12,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
@@ -91,6 +92,21 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     public void cancelButton(View view) {
         DialogFragment newFragment = new CancelNavigationFragment();
         newFragment.show(getFragmentManager(), "cancel");
+    }
+
+    public void viewRestaurants(View view) {
+
+        // Create a Uri from an intent string. Use the result to create an Intent.
+        Uri gmmIntentUri = Uri.parse("geo:0,0:q=restaurants");
+
+        // Create an Intent from gmmIntentUri. Set the action to ACTION_VIEW
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        // Make the Intent explicit by setting the Google Maps package
+        mapIntent.setPackage("com.google.android.apps.maps");
+
+        // Attempt to start an activity that can handle the Intent
+        finish();
+        startActivity(mapIntent);
     }
 
     @Override
