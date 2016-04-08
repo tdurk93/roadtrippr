@@ -8,8 +8,10 @@ import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -75,7 +77,6 @@ public class PageTwoActivity extends AppCompatActivity
                 .addApi(Places.GEO_DATA_API)
                 .build();
 
-
         // Set up the adapter that will retrieve suggestions from the Places Geo Data API that cover
         // the entire world.
         mAutocompleteFilter = new AutocompleteFilter.Builder()
@@ -83,7 +84,6 @@ public class PageTwoActivity extends AppCompatActivity
                 .build();
         mAdapter = new PlaceAutocompleteAdapter(this, mGoogleApiClient, BOUNDS_ATLANTA,
                 mAutocompleteFilter, true);
-
 
         favRestaurants = (MultiAutoCompleteTextView)findViewById(R.id.multiAutoCompleteTextView);
         favTypes = (MultiAutoCompleteTextView)findViewById(R.id.multiAutoCompleteTextView2);
@@ -101,18 +101,37 @@ public class PageTwoActivity extends AppCompatActivity
         noRestaurants.setAdapter(mAdapter);
         noRestaurants.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
 
-        if (favRestaurantsString != "") {
-            favRestaurants.setText(favRestaurantsString);
-        }
+        favRestaurants.setText(favRestaurantsString);
+        favTypes.setText(favRestaurantsTypesString);
+        noRestaurants.setText(noRestaurantsString);
 
-        if (favRestaurantsTypesString != "") {
-            favTypes.setText(favRestaurantsTypesString);
-        }
+        favRestaurants.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
-        if (noRestaurantsString != "") {
-            noRestaurants.setText(noRestaurantsString);
-        }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                submitButton.setEnabled(favRestaurants.getText().toString().length() != 0 ||
+                        favTypes.getText().toString().length() != 0);
+            }
 
+            @Override
+            public void afterTextChanged(Editable s) { }
+        });
+
+        favTypes.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                submitButton.setEnabled(favRestaurants.getText().toString().length() != 0 ||
+                        favTypes.getText().toString().length() != 0);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) { }
+        });
 
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,6 +166,17 @@ public class PageTwoActivity extends AppCompatActivity
             }
         });
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        favRestaurants = (MultiAutoCompleteTextView)findViewById(R.id.multiAutoCompleteTextView);
+        favTypes = (MultiAutoCompleteTextView)findViewById(R.id.multiAutoCompleteTextView2);
+
+        submitButton.setEnabled(favRestaurants.getText().toString().length() != 0 ||
+                favTypes.getText().toString().length() != 0);
     }
 
 
