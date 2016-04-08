@@ -12,6 +12,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
@@ -41,10 +42,16 @@ import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
-public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, CancelNavigationFragment.CancelNavigationListener {
+public class MainActivity extends AppCompatActivity implements
+        GoogleApiClient.OnConnectionFailedListener,
+        CancelNavigationFragment.CancelNavigationListener,
+        StatusMapFragment.OnFragmentInteractionListener {
     private ViewFlipper viewFlipper;
     private TimePicker tp;
     private CountDownTimer countdown;
@@ -208,8 +215,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         if (toggleMainScreen) {
             viewFlipper.showNext();
             sharedPref.edit().putBoolean("toggleMainScreen", false).apply();
+            // TODO is there a better place to put the following 2 statements?
+            StatusMapFragment myGMapFragment = new StatusMapFragment();
+                    ((MapFragment) getFragmentManager().findFragmentById(R.id.nearbyMap))
+                    .getMapAsync(myGMapFragment);
         }
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
     }
@@ -394,6 +404,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         }
     }
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
+
     public class RemainingTime extends CountDownTimer {
 
         TextView countdown = (TextView) findViewById(R.id.countdown);
@@ -419,7 +434,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             countdown.setText("Searching...");
         }
     }
-
 }
 
 
