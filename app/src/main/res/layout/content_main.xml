@@ -53,5 +53,6 @@
         android:minWidth="144dp"
         android:textSize="24sp"
         android:onClick="onContinueClicked"
-        android:layout_gravity="center_horizontal|bottom" />
+        android:layout_gravity="center_horizontal|bottom"
+        android:enabled="false" />
 </FrameLayout>

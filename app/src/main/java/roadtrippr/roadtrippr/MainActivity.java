@@ -18,11 +18,14 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ViewFlipper;
 import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
@@ -53,7 +56,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     AutoCompleteTextView endLocationTextView;
     TextView userFavoriteRestaurants;
-
 
     protected GoogleApiClient mGoogleApiClient;
 
@@ -154,6 +156,20 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             }
         });
 
+        final Button continueButton;
+        continueButton = (Button) findViewById(R.id.continueButton);
+        endLocationTextView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                continueButton.setEnabled(endLocationTextView.getText().length() != 0);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) { }
+        });
     }
 
     @Override
