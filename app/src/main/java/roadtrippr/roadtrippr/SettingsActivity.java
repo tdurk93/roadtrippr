@@ -36,7 +36,7 @@ public class SettingsActivity extends AppCompatActivity {
         String favRestaurantsString = sharedPref.getString("favRestaurants", "");
         String favRestaurantsTypesString = sharedPref.getString("favRestaurantsTypes", "");
         String noRestaurantsString = sharedPref.getString("noRestaurants", "");
-        String timeWindowString = sharedPref.getString("timeWindow", "");
+        int timeWindowInt = sharedPref.getInt("timeWindow", 1);
 
         favRestaurants = (MultiAutoCompleteTextView)findViewById(R.id.restaurants_field);
         favTypes = (MultiAutoCompleteTextView)findViewById(R.id.restaurant_types_field);
@@ -66,13 +66,12 @@ public class SettingsActivity extends AppCompatActivity {
                 String str1 = favRestaurants.getText().toString();
                 String str2 = favTypes.getText().toString();
                 String str3 = noRestaurants.getText().toString();
-                String str4 = String.valueOf(timeWindow.getValue());
-                Log.i("Input: ", str1);
+                int int1 = timeWindow.getValue();
 
                 sharedPref.edit().putString("favRestaurants", str1).apply();
                 sharedPref.edit().putString("favRestaurantsTypes", str2).apply();
                 sharedPref.edit().putString("noRestaurants", str3).apply();
-                sharedPref.edit().putString("timeWindow", str4).apply();
+                sharedPref.edit().putInt("timeWindow", int1).apply();
 
             }
         });
@@ -89,11 +88,6 @@ public class SettingsActivity extends AppCompatActivity {
             noRestaurants.setText(noRestaurantsString);
         }
 
-        if (timeWindowString != "") {
-            timeWindow.setValue(Integer.valueOf(timeWindowString));
-        } else {
-            timeWindow.setValue(1);
-        }
-
+        timeWindow.setValue(timeWindowInt);
     }
 }
