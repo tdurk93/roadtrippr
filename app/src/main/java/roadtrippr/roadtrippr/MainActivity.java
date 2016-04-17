@@ -1,6 +1,7 @@
 package roadtrippr.roadtrippr;
 
 import java.util.Calendar;
+import java.util.Vector;
 
 import android.Manifest;
 import android.app.DialogFragment;
@@ -434,6 +435,28 @@ public class MainActivity extends AppCompatActivity implements
             countdown.setText("Searching...");
         }
     }
+
+    private boolean isEnroute(Location stop) {
+
+        double currLon = currentLocation.getLongitude();
+        double currLat = currentLocation.getLatitude();
+        double stopLon = stop.getLongitude();
+        double stopLat = stop.getLatitude();
+        double destLon = 0; // TODO insert actual value
+        double destLat = 0; // TODO insert actual value
+        double trajectoryX = destLon - currLon;
+        double trajectoryY = destLat - currLat;
+        double detourX = stopLon - currLon;
+        double detourY = stopLat - currLat;
+
+        // Check cos ( angle between detour and trajectory ) > 0
+        return (detourX * trajectoryX + detourY * trajectoryY) / (
+                Math.sqrt(detourX * detourX + detourY * detourY) *
+                        Math.sqrt(trajectoryX * trajectoryX + trajectoryY * trajectoryY)
+        ) > 0; // Considered enroute if route is less than 90 degrees in the wrong direction
+
+    }
+
 }
 
 
