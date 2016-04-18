@@ -42,9 +42,7 @@ import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
@@ -216,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements
             viewFlipper.showNext();
             sharedPref.edit().putBoolean("toggleMainScreen", false).apply();
             // TODO is there a better place to put the following 2 statements?
-            StatusMapFragment myGMapFragment = new StatusMapFragment();
+            StatusMapFragment myGMapFragment = StatusMapFragment.newInstance(destination);
                     ((MapFragment) getFragmentManager().findFragmentById(R.id.nearbyMap))
                     .getMapAsync(myGMapFragment);
         }
