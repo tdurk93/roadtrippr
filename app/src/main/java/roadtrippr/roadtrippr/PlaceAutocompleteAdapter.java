@@ -77,6 +77,7 @@ public class PlaceAutocompleteAdapter
 
     private static final String TAG = "PlaceAutocompleteAdapter";
     private static final CharacterStyle STYLE_BOLD = new StyleSpan(Typeface.BOLD);
+    private ArrayList<String> autocompleteRestaurants = new ArrayList<String>();
     /**
      * Current results returned by this adapter.
      */
@@ -152,8 +153,27 @@ public class PlaceAutocompleteAdapter
 
         TextView textView1 = (TextView) row.findViewById(android.R.id.text1);
         TextView textView2 = (TextView) row.findViewById(android.R.id.text2);
-        textView1.setText(item.getPrimaryText(STYLE_BOLD));
-        textView2.setText(item.getSecondaryText(STYLE_BOLD));
+        textView1.setText(item.getPrimaryText(STYLE_BOLD)); // restaurant name
+        //textView2.setText(item.getSecondaryText(STYLE_BOLD)); // restaurant address
+
+        // check if a restaurant with the same name has already appeared in prior suggestions
+        Log.d("tag", "hihi");
+        boolean exists = false;
+        Iterator<String> iterator = autocompleteRestaurants.iterator();
+        while (iterator.hasNext()) {
+            Log.d("tag", item.getPrimaryText(STYLE_BOLD).toString());
+            if (iterator.next().equalsIgnoreCase(item.getPrimaryText(STYLE_BOLD).toString())) {
+                // it's a duplicate, so don't remove suggestion
+                exists = true;
+                break;
+            }
+        }
+
+        if (exists) {
+            //textView1.setText("");
+        } else {
+            autocompleteRestaurants.add(textView1.getText().toString());
+        }
 
         return row;
     }
