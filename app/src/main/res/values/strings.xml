@@ -10,6 +10,7 @@
     <string name="restaurant_types_label">Favorite Restaurant Types</string>
     <string name="unacceptable_restaurants_label">Unacceptable Restaurants</string>
     <string name="save_button_label">Save</string>
+    <string name="eating_window_label">How soon should we notify you? (min)</string>
 
     <string-array name="restaurants">
         <item>Taco Bell</item>
@@ -37,8 +38,5 @@
         <item>25 Minutes</item>
         <item>30 Minutes</item>
     </string-array>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

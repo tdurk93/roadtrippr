@@ -74,19 +74,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Set Eatting Window (+/-):"
+                android:text="@string/eating_window_label"
                 android:id="@+id/textView6"
                 android:layout_marginTop="25dp" />
 
-            <Spinner
+            <NumberPicker
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/time_window"
-                android:entries="@array/times"
-                android:spinnerMode="dialog"
-                android:layout_above="@+id/saveButton"
-                android:layout_alignParentStart="true"
-                android:layout_marginTop="10dp" />
+                android:id="@+id/eating_window_picker"
+                android:layout_gravity="center_horizontal" />
 
             <Button
                 android:layout_width="wrap_content"
@@ -98,8 +94,7 @@
                 android:textSize="24sp"
                 android:layout_gravity="center_horizontal"
                 android:layout_alignBottom="@+id/scrollView"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="65dp" />
+                android:layout_centerHorizontal="true" />
 
         </LinearLayout>
     </ScrollView>

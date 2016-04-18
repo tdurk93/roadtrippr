@@ -1,6 +1,7 @@
 package roadtrippr.roadtrippr;
 
 import java.util.Calendar;
+import java.util.Vector;
 
 import android.Manifest;
 import android.app.DialogFragment;
@@ -12,17 +13,21 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ViewFlipper;
 import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
@@ -38,10 +43,16 @@ import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
-public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, CancelNavigationFragment.CancelNavigationListener {
+public class MainActivity extends AppCompatActivity implements
+        GoogleApiClient.OnConnectionFailedListener,
+        CancelNavigationFragment.CancelNavigationListener,
+        StatusMapFragment.OnFragmentInteractionListener {
     private ViewFlipper viewFlipper;
     private TimePicker tp;
     private CountDownTimer countdown;
@@ -49,12 +60,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private String provider;
     private static final int LOCATION_REQUEST_CODE = 1;
     private static final int SETUP_LOCATION_CODE = 2;
-    private static final String YOUR_LOCATION = "Your location";
     private String destination = "Atlanta, GA";
 
-    AutoCompleteTextView startLocationTextView, endLocationTextView;
+    AutoCompleteTextView endLocationTextView;
     TextView userFavoriteRestaurants;
-
 
     protected GoogleApiClient mGoogleApiClient;
 
@@ -155,6 +164,20 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             }
         });
 
+        final Button continueButton;
+        continueButton = (Button) findViewById(R.id.continueButton);
+        endLocationTextView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                continueButton.setEnabled(endLocationTextView.getText().length() != 0);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) { }
+        });
     }
 
     @Override
@@ -193,8 +216,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         if (toggleMainScreen) {
             viewFlipper.showNext();
             sharedPref.edit().putBoolean("toggleMainScreen", false).apply();
+            // TODO is there a better place to put the following 2 statements?
+            StatusMapFragment myGMapFragment = new StatusMapFragment();
+                    ((MapFragment) getFragmentManager().findFragmentById(R.id.nearbyMap))
+                    .getMapAsync(myGMapFragment);
         }
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
     }
@@ -211,23 +237,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
         endLocationTextView = (AutoCompleteTextView)findViewById(R.id.endLocationAutoCompleteTextView);
 
-        if (currentLocation != null) {
-            startLocationTextView.setText(YOUR_LOCATION);
-        } else {
-            Toast.makeText(
-                    getApplicationContext(),
-                    "Failed to find current location. Please grant Roadtrippr permission " +
-                            "to use your location and make sure GPS is enabled",
-                    Toast.LENGTH_LONG
-            ).show();
-        }
-
         endLocationTextView.setOnItemClickListener(mAutocompleteViewClickListener);
         endLocationTextView.setAdapter(mAdapter);
 
     }
 
-    private boolean setupLocation(boolean askPermission) {
+    private void setupLocation(boolean askPermission) {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         provider = locationManager.getBestProvider(new Criteria(), false);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -245,7 +260,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                         SETUP_LOCATION_CODE
                 );
             }
-            return false;
+            return;
         }
         locationManager.requestLocationUpdates(provider, 400, 1, new LocationListener() {
             @Override
@@ -264,7 +279,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             Log.i("Location Info", "Location failed to be found");
         }
         setupAutocompleteTextViews();
-        return true;
     }
 
     private AdapterView.OnItemClickListener mAutocompleteViewClickListener
@@ -391,6 +405,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         }
     }
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
+
     public class RemainingTime extends CountDownTimer {
 
         TextView countdown = (TextView) findViewById(R.id.countdown);
@@ -415,6 +434,27 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         public void onFinish() {
             countdown.setText("Searching...");
         }
+    }
+
+    private boolean isEnroute(Location stop) {
+
+        double currLon = currentLocation.getLongitude();
+        double currLat = currentLocation.getLatitude();
+        double stopLon = stop.getLongitude();
+        double stopLat = stop.getLatitude();
+        double destLon = 0; // TODO insert actual value
+        double destLat = 0; // TODO insert actual value
+        double trajectoryX = destLon - currLon;
+        double trajectoryY = destLat - currLat;
+        double detourX = stopLon - currLon;
+        double detourY = stopLat - currLat;
+
+        // Check cos ( angle between detour and trajectory ) > 0
+        return (detourX * trajectoryX + detourY * trajectoryY) / (
+                Math.sqrt(detourX * detourX + detourY * detourY) *
+                        Math.sqrt(trajectoryX * trajectoryX + trajectoryY * trajectoryY)
+        ) > 0; // Considered enroute if route is less than 90 degrees in the wrong direction
+
     }
 
 }

@@ -82,7 +82,8 @@
                 android:minWidth="144dp"
                 android:textSize="24sp"
                 android:layout_marginTop="32dp"
-                android:layout_gravity="center_horizontal" />
+                android:layout_gravity="center_horizontal"
+                android:enabled="false"/>
 
         </LinearLayout>
     </ScrollView>
