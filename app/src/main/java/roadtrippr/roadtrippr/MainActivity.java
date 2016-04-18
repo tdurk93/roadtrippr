@@ -56,6 +56,9 @@ public class MainActivity extends AppCompatActivity implements
     private CountDownTimer countdown;
     private LocationManager locationManager;
     private String provider;
+    private boolean isRunning;
+    private int hourPicked;
+    private int minPicked;
     private static final int LOCATION_REQUEST_CODE = 1;
     private static final int SETUP_LOCATION_CODE = 2;
     private String destination = "Atlanta, GA";
@@ -84,11 +87,16 @@ public class MainActivity extends AppCompatActivity implements
             destination = endLocationTextView.getText().toString();
         }
         i.putExtra("destination", destination);
-
+        isRunning = true;
+        startTimer();
         startActivity(i);
     }
 
     public void cancelButton(View view) {
+        if (isRunning) {
+            countdown.cancel();
+        }
+
         DialogFragment newFragment = new CancelNavigationFragment();
         newFragment.show(getFragmentManager(), "cancel");
     }
@@ -142,23 +150,12 @@ public class MainActivity extends AppCompatActivity implements
 
         setupLocation(true);
 
-        //Calculate countdown time
         tp = (TimePicker) findViewById(R.id.mealTimePicker);
         tp.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
             @Override
             public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-
-                Calendar calendar = Calendar.getInstance();
-                int hour = Math.abs(hourOfDay - calendar.get(Calendar.HOUR_OF_DAY));
-                int min = minute - calendar.get(Calendar.MINUTE);
-                if (min < 0){
-                    min += 60;
-                    --hour;
-                }
-
-                long millsec = (hour*3600000)+(min*60000);
-                long interval = 60000;
-                countdown = new RemainingTime(millsec, interval).start();
+                hourPicked = hourOfDay;
+                minPicked = minute;
             }
         });
 
@@ -408,29 +405,72 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+
     public class RemainingTime extends CountDownTimer {
 
         TextView countdown = (TextView) findViewById(R.id.countdown);
-
-
+        final SharedPreferences sharedPref = getSharedPreferences("roadtrippr.roadtrippr", Context.MODE_PRIVATE);
+        int window = sharedPref.getInt("timeWindow", 1);
+        int count = 0;
         public RemainingTime(long start, long interval) {
             super(start, interval);
         }
 
-
         public void onTick(long millisUntilFinished) {
+
+            int seconds = (int) (millisUntilFinished / 1000) % 60;
             int minutes = (int) ((millisUntilFinished / (1000*60)) % 60);
             int hours   = (int) ((millisUntilFinished / (1000*60*60)) % 24);
 
-            if (hours == 0) {
-                countdown.setText(new StringBuilder().append(minutes).append(" min"));
-            } else {
-                countdown.setText(new StringBuilder().append(hours).append(" hr ").append(minutes).append(" min"));
+            if (minutes == 0 && hours != 0) {
+                hours--;
+                minutes = 59;
             }
+
+            if (hours == 0 && minutes == 0) {
+                countdown.setText(" " + seconds);
+            } else if (hours == 0){
+                countdown.setText(minutes + " : " + seconds);
+            } else {
+                countdown.setText(hours + " : " + minutes + " : " + seconds);
+            }
+
+            /* TO DO: IMPLEMENT NOTIFICATION
+            if (millisUntilFinished <= window) {
+
+            }
+            */
         }
 
         public void onFinish() {
             countdown.setText("Searching...");
+        }
+    }
+
+    public void startTimer(){
+        final SharedPreferences sharedPref = getSharedPreferences("roadtrippr.roadtrippr", Context.MODE_PRIVATE);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, hourPicked);
+        calendar.set(Calendar.MINUTE, minPicked);
+
+        Calendar calendar2 = Calendar.getInstance();
+        long currentTime = System.currentTimeMillis();
+        long diffTime = calendar.getTimeInMillis()- currentTime;
+
+        if (hourPicked == 0 && minPicked == 0) {
+            sharedPref.edit().putBoolean("searching", true).apply();
+            TextView countdown = (TextView) findViewById(R.id.countdown);
+            countdown.setText("Searching...");
+        } else {
+            int hourDiff = (24 - (calendar2.get(Calendar.HOUR_OF_DAY) - hourPicked))*60*60*1000;
+            int minDiff = Math.abs(calendar2.get(Calendar.MINUTE) - minPicked)*60*1000;
+            if (diffTime >= 0) {
+                countdown = new RemainingTime(diffTime, 1000).start();
+            } else if (hourPicked == calendar2.get(Calendar.HOUR_OF_DAY)) {
+                countdown = new RemainingTime(hourDiff-minDiff, 1000).start();
+            } else {
+                countdown = new RemainingTime(hourDiff+minDiff, 1000).start();
+            }
         }
     }
 
