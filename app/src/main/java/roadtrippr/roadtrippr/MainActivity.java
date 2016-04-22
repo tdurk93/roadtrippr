@@ -33,6 +33,8 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 import android.widget.TimePicker;
 import android.widget.TextView;
+
+import roadtrippr.roadtrippr.googlePlaces.GooglePlacesActivity;
 import roadtrippr.roadtrippr.logger.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -102,6 +104,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void viewRestaurants(View view) {
+        Intent i = new Intent(getApplicationContext(), GooglePlacesActivity.class);
+        startActivity(i);
     }
 
     @Override
