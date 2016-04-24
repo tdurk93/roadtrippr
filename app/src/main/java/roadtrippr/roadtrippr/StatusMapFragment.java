@@ -106,6 +106,9 @@ public class StatusMapFragment extends MapFragment implements OnMapReadyCallback
         void onFragmentInteraction(Uri uri);
     }
 
+    public void onMapReady(GoogleMap map) {}
+    public void centerMapOnCurrentLocation(GoogleMap map) {}
+    /*
     public void onMapReady(GoogleMap map) {
         centerMapOnCurrentLocation(map);
 
@@ -139,4 +142,5 @@ public class StatusMapFragment extends MapFragment implements OnMapReadyCallback
             Log.e("StatusMapFragment", "Need permission to do that!");
         }
     }
+    */
 }
