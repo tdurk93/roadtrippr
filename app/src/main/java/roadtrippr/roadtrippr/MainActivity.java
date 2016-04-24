@@ -1,7 +1,6 @@
 package roadtrippr.roadtrippr;
 
 import java.util.Calendar;
-import java.util.Vector;
 
 import android.Manifest;
 import android.app.DialogFragment;
@@ -74,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private AutocompleteFilter mAutocompleteFilter;
 
-    private Location currentLocation;
+    public static Location CURRENT_LOCATION;
 
     private static final LatLngBounds BOUNDS_ATLANTA = new LatLngBounds(
             new LatLng(33.749249, -84.387314), new LatLng(33.749249, -84.387314));
@@ -273,9 +272,9 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onProviderDisabled(String provider) {}
         });
-        currentLocation = locationManager.getLastKnownLocation(provider);
-        if (currentLocation != null) {
-            Log.i("Location Info", currentLocation.toString());
+        CURRENT_LOCATION = locationManager.getLastKnownLocation(provider);
+        if (CURRENT_LOCATION != null) {
+            Log.i("Location Info", CURRENT_LOCATION.toString());
         } else {
             Log.i("Location Info", "Location failed to be found");
         }
@@ -399,9 +398,9 @@ public class MainActivity extends AppCompatActivity implements
         if (provider == null) {
             provider = locationManager.getBestProvider(new Criteria(), false);
         }
-        currentLocation = locationManager.getLastKnownLocation(provider);
-        if (currentLocation != null) {
-            Toast.makeText(getApplicationContext(), currentLocation.toString(), Toast.LENGTH_LONG).show();
+        CURRENT_LOCATION = locationManager.getLastKnownLocation(provider);
+        if (CURRENT_LOCATION != null) {
+            Toast.makeText(getApplicationContext(), CURRENT_LOCATION.toString(), Toast.LENGTH_LONG).show();
         } else {
             Toast.makeText(getApplicationContext(), "No location found", Toast.LENGTH_SHORT).show();
         }
@@ -481,12 +480,12 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    private boolean isEnroute(Location stop) {
+    public static boolean isEnroute(LatLng stop) {
 
-        double currLon = currentLocation.getLongitude();
-        double currLat = currentLocation.getLatitude();
-        double stopLon = stop.getLongitude();
-        double stopLat = stop.getLatitude();
+        double currLon = CURRENT_LOCATION.getLongitude();
+        double currLat = CURRENT_LOCATION.getLatitude();
+        double stopLon = stop.longitude;
+        double stopLat = stop.latitude;
         double destLon = 0; // TODO insert actual value
         double destLat = 0; // TODO insert actual value
         double trajectoryX = destLon - currLon;

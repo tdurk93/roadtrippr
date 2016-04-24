@@ -25,14 +25,13 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
+import roadtrippr.roadtrippr.MainActivity;
 import roadtrippr.roadtrippr.R;
 
 public class GooglePlacesActivity extends FragmentActivity implements LocationListener {
     private static final String GOOGLE_API_KEY = "AIzaSyB1cWnsuuiVHmlzwEDPos8efzlM9QOQNxI";
     GoogleMap googleMap;
     EditText placeText;
-    public static double CURRENT_LATITUDE = 33.749249; // set current latitude
-    public static double CURRENT_LONGITUDE = -84.387314; // set current longitude
     private int PROXIMITY_RADIUS = 3300; // 3.3km = 2 miles
     private ListView listView;
 
@@ -50,7 +49,7 @@ public class GooglePlacesActivity extends FragmentActivity implements LocationLi
 
         //String type = placeText.getText().toString();
         StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
-        googlePlacesUrl.append("location=" + CURRENT_LATITUDE + "," + CURRENT_LONGITUDE);
+        googlePlacesUrl.append("location=" + MainActivity.CURRENT_LOCATION.getLatitude() + "," + MainActivity.CURRENT_LOCATION.getLongitude());
         googlePlacesUrl.append("&radius=" + PROXIMITY_RADIUS);
         googlePlacesUrl.append("&types=" + "restaurant");
         googlePlacesUrl.append("&sensor=true");
@@ -105,9 +104,7 @@ public class GooglePlacesActivity extends FragmentActivity implements LocationLi
 
     @Override
     public void onLocationChanged(Location location) {
-        CURRENT_LATITUDE = location.getLatitude();
-        CURRENT_LONGITUDE = location.getLongitude();
-        LatLng latLng = new LatLng(CURRENT_LATITUDE, CURRENT_LONGITUDE);
+        LatLng latLng = new LatLng(MainActivity.CURRENT_LOCATION.getLatitude(), MainActivity.CURRENT_LOCATION.getLongitude());
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(12));
     }

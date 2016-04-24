@@ -12,8 +12,11 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import roadtrippr.roadtrippr.MainActivity;
 
 public class GooglePlacesReadTask extends AsyncTask<Object, Integer, String> {
     GooglePlacesActivity googlePlacesActivity;
@@ -44,8 +47,21 @@ public class GooglePlacesReadTask extends AsyncTask<Object, Integer, String> {
 
         List<HashMap<String, String>> nearbyList = placesDisplayTask.getNearbyPlaces();
 
-        String[] values = new String[nearbyList.size()];
+        Log.d("NEARBY COUNT", "" + nearbyList.size());
+        ArrayList<HashMap<String, String>> removeList = new ArrayList<>();
+        for (HashMap<String, String> googlePlace : nearbyList) {
+            double lat = Double.parseDouble(googlePlace.get("lat"));
+            double lng = Double.parseDouble(googlePlace.get("lng"));
+            if (!MainActivity.isEnroute(new LatLng(lat, lng))) {
+                Log.d("ENROUTE FILTER", "" + "removing");
+                removeList.add(googlePlace);
+            }
+            Log.d("ENROUTE FILTER", "" + "not removing");
+        }
+        nearbyList.removeAll(removeList);
 
+        String[] values = new String[nearbyList.size()];
+        Log.d("NEARBY COUNT", "" + nearbyList.size());
         for (int i = 0; i < nearbyList.size(); i++) {
             MarkerOptions markerOptions = new MarkerOptions();
             HashMap<String, String> googlePlace = nearbyList.get(i);

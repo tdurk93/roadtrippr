@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import roadtrippr.roadtrippr.MainActivity;
+
 public class Places {
 
     public List<HashMap<String, String>> parse(JSONObject jsonObject) {
@@ -62,7 +64,7 @@ public class Places {
             }
             latitude = googlePlaceJson.getJSONObject("geometry").getJSONObject("location").getString("lat");
             longitude = googlePlaceJson.getJSONObject("geometry").getJSONObject("location").getString("lng");
-            distance = String.valueOf(calculateDistance(GooglePlacesActivity.CURRENT_LATITUDE, GooglePlacesActivity.CURRENT_LONGITUDE, Double.parseDouble(latitude), Double.parseDouble(longitude), "M"));
+            distance = String.valueOf(calculateDistance(MainActivity.CURRENT_LOCATION.getLatitude(), MainActivity.CURRENT_LOCATION.getLongitude(), Double.parseDouble(latitude), Double.parseDouble(longitude), "M"));
             reference = googlePlaceJson.getString("reference");
             googlePlaceMap.put("place_name", placeName);
             googlePlaceMap.put("id", id);
