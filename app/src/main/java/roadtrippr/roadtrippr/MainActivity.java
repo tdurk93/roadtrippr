@@ -490,12 +490,12 @@ public class MainActivity extends AppCompatActivity implements
         Notification.InboxStyle inboxStyle = new Notification.InboxStyle();
         inboxStyle.addLine("Nearest Restaurant Details");
         inboxStyle.addLine("Click here to view all nearby Restaurant");
-        inboxStyle.setBigContentTitle("TITLE");
+        inboxStyle.setBigContentTitle("RoadTrippr");
 
         Notification notification = new Notification.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("TEST")
-                .setContentText("test")
+                .setContentTitle("RoadTrippr")
+                //.setContentText("test")
                 .setStyle(inboxStyle)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
