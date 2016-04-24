@@ -434,12 +434,10 @@ public class MainActivity extends AppCompatActivity implements
                 minutes = 59;
             }
 
-            if (hours == 0 && minutes == 0) {
-                countdown.setText(" " + seconds);
-            } else if (hours == 0){
-                countdown.setText(minutes + " : " + seconds);
+            if (hours == 0) {
+                countdown.setText(String.format("%02d:%02d", minutes, seconds));
             } else {
-                countdown.setText(hours + " : " + minutes + " : " + seconds);
+                countdown.setText(String.format("%02d:%02d:%02d", hours, minutes, seconds));
             }
 
             /* TO DO: IMPLEMENT NOTIFICATION
