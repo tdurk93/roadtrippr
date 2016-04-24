@@ -144,10 +144,6 @@ public class PageTwoActivity extends AppCompatActivity
                 String str2 = favTypes.getText().toString();
                 String str3 = noRestaurants.getText().toString();
 
-                Log.i("Favorite Restaurants: ", str1);
-                Log.i("Favorite Types: ", str2);
-                Log.i("No Restaurants: ", str3);
-
                 sharedPref.edit().putString("favRestaurants", str1).apply();
                 sharedPref.edit().putString("favRestaurantsTypes", str2).apply();
                 sharedPref.edit().putString("noRestaurants", str3).apply();
