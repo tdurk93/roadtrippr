@@ -2,7 +2,7 @@ package roadtrippr.roadtrippr;
 
 import java.util.Calendar;
 import java.util.Vector;
-
+import android.media.RingtoneManager;
 import android.Manifest;
 import android.app.DialogFragment;
 import android.app.PendingIntent;
@@ -488,9 +488,11 @@ public class MainActivity extends AppCompatActivity implements
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,intent, 0);
 
         Notification.InboxStyle inboxStyle = new Notification.InboxStyle();
-        inboxStyle.addLine("Nearest Restaurant Details");
-        inboxStyle.addLine("Click here to view all nearby Restaurant");
+        inboxStyle.addLine("Wendy's - 6.5mi");
+        inboxStyle.addLine("Next Wendy's - 8.1mi");
         inboxStyle.setBigContentTitle("RoadTrippr");
+        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
 
         Notification notification = new Notification.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
@@ -499,6 +501,7 @@ public class MainActivity extends AppCompatActivity implements
                 .setStyle(inboxStyle)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
+                .setSound(alarmSound)
                 .build();
 
         notificationManager.notify(0, notification);
