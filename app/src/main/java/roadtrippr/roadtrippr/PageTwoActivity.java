@@ -53,7 +53,6 @@ public class PageTwoActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final SharedPreferences sharedPref = getSharedPreferences("roadtrippr.roadtrippr", Context.MODE_PRIVATE);
 
         setContentView(R.layout.activity_page_two);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -147,10 +146,6 @@ public class PageTwoActivity extends AppCompatActivity
                 Log.i("Favorite Restaurants: ", str1);
                 Log.i("Favorite Types: ", str2);
                 Log.i("No Restaurants: ", str3);
-
-                sharedPref.edit().putString("favRestaurants", str1).apply();
-                sharedPref.edit().putString("favRestaurantsTypes", str2).apply();
-                sharedPref.edit().putString("noRestaurants", str3).apply();
 
                 // Create a Uri from an intent string. Use the result to create an Intent.
                 Uri gmmIntentUri = Uri.parse("google.navigation:q=" + Uri.encode(getIntent().getStringExtra("destination")));
