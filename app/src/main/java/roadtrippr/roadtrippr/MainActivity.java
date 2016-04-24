@@ -83,6 +83,8 @@ public class MainActivity extends AppCompatActivity implements
 
     String[] distance;
 
+    LatLng destinationLatLng = null;
+
     public void onContinueClicked(View view) {
         Intent i = new Intent(getApplicationContext(), PageTwoActivity.class);
         if (!endLocationTextView.getText().toString().equals("")) {
@@ -303,8 +305,8 @@ public class MainActivity extends AppCompatActivity implements
                     .getPlaceById(mGoogleApiClient, placeId);
             placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
 
-            Toast.makeText(getApplicationContext(), "Clicked: " + primaryText,
-                    Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(), "Clicked: " + primaryText,
+              //      Toast.LENGTH_SHORT).show();
             Log.i(TAG, "Called getPlaceById to get Place details for " + placeId);
         }
     };
@@ -321,7 +323,8 @@ public class MainActivity extends AppCompatActivity implements
                 // Request did not complete successfully
                 Log.e(TAG, "Place query did not complete. Error: " + places.getStatus().toString());
                 places.release();
-                return;
+            } else {
+                destinationLatLng = places.get(0).getLatLng();
             }
         }
     };
