@@ -55,7 +55,7 @@
             <!-- TODO make this a scrollable section -->
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="20dp"
+                android:layout_height="90dp"
                 android:id="@+id/userFavoriteRestaurants"
                 android:textSize="20sp" />
             <Button
