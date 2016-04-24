@@ -11,6 +11,9 @@
     <string name="unacceptable_restaurants_label">Unacceptable Restaurants</string>
     <string name="save_button_label">Save</string>
     <string name="eating_window_label">How soon should we notify you? (min)</string>
+    <string name="cancel_button_label">Cancel</string>
+    <string name="view_nearby_button_label">View Nearby Restaurants</string>
+    <string name="time_remaining_label">Time Remaining:</string>
 
     <string-array name="restaurants">
         <item>Taco Bell</item>
