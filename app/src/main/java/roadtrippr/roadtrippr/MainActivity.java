@@ -224,6 +224,16 @@ public class MainActivity extends AppCompatActivity implements
         }
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        distance = new String[] {"(2 Miles)","(7 Miles)","(13 Miles)"};
+        final SharedPreferences sharedPreferences = this.getSharedPreferences("roadtrippr.roadtrippr", Context.MODE_PRIVATE);
+        String favRestaurantsString = sharedPreferences.getString("favRestaurants", "");
+        String[] favRestaurantsArray = favRestaurantsString.split(", ");
+        favRestaurantsString = "";
+        for(int i = 0; i < favRestaurantsArray.length; i++){
+            favRestaurantsString += favRestaurantsArray[i] + " " + distance[i] + "\n";
+        }
+        userFavoriteRestaurants = (TextView) findViewById(R.id.userFavoriteRestaurants);
+        userFavoriteRestaurants.setText(favRestaurantsString);
     }
 
     // ------------------- Google Places API -------------------
