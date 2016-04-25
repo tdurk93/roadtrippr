@@ -49,7 +49,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
@@ -81,20 +80,16 @@ public class MainActivity extends AppCompatActivity implements
             currentFavTypes = new ArrayList<>(),
             currentNoRestaurants = new ArrayList<>();
 
-    public static final HashMap<String, Double> FAV_DISTANCES = new HashMap<>();
     public static GoogleMap GOOGLE_MAP = null;
     public static ArrayList<MarkerOptions> nearbyMarkers = new ArrayList<>();
     public static HashMap<Integer, MarkerOptions> favoriteMarkers = new HashMap<>();
 
 
     AutoCompleteTextView endLocationTextView;
-    TextView userFavoriteRestaurants;
 
     protected GoogleApiClient mGoogleApiClient;
 
     private PlaceAutocompleteAdapter mAdapter;
-
-    private AutocompleteFilter mAutocompleteFilter;
 
     public static Location CURRENT_LOCATION;
 
@@ -102,8 +97,6 @@ public class MainActivity extends AppCompatActivity implements
             new LatLng(33.749249, -84.387314), new LatLng(33.749249, -84.387314));
 
     private static final String TAG = "PlaceAutocompleteAdapter";
-
-    ArrayList<SearchResult> results = new ArrayList<>();
 
     static LatLng destinationLatLng = null;
 
@@ -461,12 +454,6 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
-    }
-
-
     public class RemainingTime extends CountDownTimer {
 
         TextView countdown = (TextView) findViewById(R.id.countdown);
@@ -568,7 +555,6 @@ public class MainActivity extends AppCompatActivity implements
         Notification notification = new Notification.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle("RoadTrippr")
-                //.setContentText("test")
                 .setStyle(inboxStyle)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
@@ -576,28 +562,6 @@ public class MainActivity extends AppCompatActivity implements
                 .build();
 
         notificationManager.notify(0, notification);
-
-    }
-
-
-    public class SearchResult {
-        private final String name;
-        private double distance;
-        public SearchResult(String name, double distance) {
-            this.name = name;
-            this.distance = distance;
-        }
-        public void setDistance(double distance) {
-            this.distance = distance;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public double getDistance() {
-            return distance;
-        }
 
     }
 

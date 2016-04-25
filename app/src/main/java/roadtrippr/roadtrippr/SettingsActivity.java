@@ -5,9 +5,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -15,7 +12,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.NumberPicker;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -28,6 +24,8 @@ import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+
+import java.util.Objects;
 
 public class SettingsActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
@@ -124,15 +122,15 @@ public class SettingsActivity extends AppCompatActivity implements GoogleApiClie
             }
         });
 
-        if (favRestaurantsString != "") {
+        if (!Objects.equals(favRestaurantsString, "")) {
             favRestaurants.setText(favRestaurantsString);
         }
 
-        if (favRestaurantsTypesString != "") {
+        if (!Objects.equals(favRestaurantsTypesString, "")) {
             favTypes.setText(favRestaurantsTypesString);
         }
 
-        if (noRestaurantsString != "") {
+        if (!Objects.equals(noRestaurantsString, "")) {
             noRestaurants.setText(noRestaurantsString);
         }
 
@@ -192,52 +190,10 @@ public class SettingsActivity extends AppCompatActivity implements GoogleApiClie
                 // Request did not complete successfully
                 roadtrippr.roadtrippr.logger.Log.e(TAG, "Place query did not complete. Error: " + places.getStatus().toString());
                 places.release();
-                return;
             }
-
-            /*
-            // Get the Place object from the buffer.
-            final Place place = places.get(0);
-
-            // Format details of the place for display and show it in a TextView.
-            mPlaceDetailsText.setText(formatPlaceDetails(getResources(), place.getName(),
-                    place.getId(), place.getAddress(), place.getPhoneNumber(),
-                    place.getWebsiteUri()));
-
-            // Display the third party attributions if set.
-            final CharSequence thirdPartyAttribution = places.getAttributions();
-            if (thirdPartyAttribution == null) {
-                mPlaceDetailsAttribution.setVisibility(View.GONE);
-            } else {
-                mPlaceDetailsAttribution.setVisibility(View.VISIBLE);
-                mPlaceDetailsAttribution.setText(Html.fromHtml(thirdPartyAttribution.toString()));
-            }
-
-            Log.i(TAG, "Place details received: " + place.getName());
-
-            places.release();
-            */
         }
     };
 
-    /*
-    private static Spanned formatPlaceDetails(Resources res, CharSequence name, String id,
-                                              CharSequence address, CharSequence phoneNumber, Uri websiteUri) {
-        Log.e(TAG, res.getString(R.string.place_details, name, id, address, phoneNumber,
-                websiteUri));
-        return Html.fromHtml(res.getString(R.string.place_details, name, id, address, phoneNumber,
-                websiteUri));
-
-    }
-    */
-
-    /**
-     * Called when the Activity could not connect to Google Play services and the auto manager
-     * could resolve the error automatically.
-     * In this case the API is not available and notify the user.
-     *
-     * @param connectionResult can be inspected to determine the cause of the failure
-     */
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
 

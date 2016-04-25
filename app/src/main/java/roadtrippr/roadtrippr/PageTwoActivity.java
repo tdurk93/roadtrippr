@@ -3,14 +3,11 @@ package roadtrippr.roadtrippr;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
-import android.text.Html;
-import android.text.Spanned;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.WindowManager;
@@ -234,43 +231,9 @@ public class PageTwoActivity extends AppCompatActivity
                 // Request did not complete successfully
                 Log.e(TAG, "Place query did not complete. Error: " + places.getStatus().toString());
                 places.release();
-                return;
             }
-            /*
-            // Get the Place object from the buffer.
-            final Place place = places.get(0);
-
-            // Format details of the place for display and show it in a TextView.
-            mPlaceDetailsText.setText(formatPlaceDetails(getResources(), place.getName(),
-                    place.getId(), place.getAddress(), place.getPhoneNumber(),
-                    place.getWebsiteUri()));
-
-            // Display the third party attributions if set.
-            final CharSequence thirdPartyAttribution = places.getAttributions();
-            if (thirdPartyAttribution == null) {
-                mPlaceDetailsAttribution.setVisibility(View.GONE);
-            } else {
-                mPlaceDetailsAttribution.setVisibility(View.VISIBLE);
-                mPlaceDetailsAttribution.setText(Html.fromHtml(thirdPartyAttribution.toString()));
-            }
-
-            Log.i(TAG, "Place details received: " + place.getName());
-
-            places.release();
-            */
         }
     };
-
-    /*
-    private static Spanned formatPlaceDetails(Resources res, CharSequence name, String id,
-                                              CharSequence address, CharSequence phoneNumber, Uri websiteUri) {
-        Log.e(TAG, res.getString(R.string.place_details, name, id, address, phoneNumber,
-                websiteUri));
-        return Html.fromHtml(res.getString(R.string.place_details, name, id, address, phoneNumber,
-                websiteUri));
-
-    }
-    */
 
     /**
      * Called when the Activity could not connect to Google Play services and the auto manager

@@ -1,9 +1,5 @@
 package roadtrippr.roadtrippr;
 
-/**
- * Created by sungholee on 3/4/16.
- */
-
 /*
  * Copyright (C) 2015 Google Inc. All Rights Reserved.
  *

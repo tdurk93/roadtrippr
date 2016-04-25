@@ -1,28 +1,18 @@
 package roadtrippr.roadtrippr.googlePlaces;
 
-/**
- * Created by sungholee on 4/22/16.
- */
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -33,7 +23,7 @@ public class GooglePlacesActivity extends FragmentActivity implements LocationLi
     private static final String GOOGLE_API_KEY = "AIzaSyB1cWnsuuiVHmlzwEDPos8efzlM9QOQNxI";
     GoogleMap googleMap;
     EditText placeText;
-    private int PROXIMITY_RADIUS = 8000; // ~5 miles
+    private static final int PROXIMITY_RADIUS = 8000; // ~5 miles
     private ListView listView;
 
     @Override

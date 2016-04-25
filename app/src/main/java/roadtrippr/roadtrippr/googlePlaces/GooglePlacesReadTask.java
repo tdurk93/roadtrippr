@@ -1,8 +1,5 @@
 package roadtrippr.roadtrippr.googlePlaces;
 
-/**
- * Created by sungholee on 4/22/16.
- */
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;

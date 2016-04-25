@@ -1,8 +1,5 @@
 package roadtrippr.roadtrippr.googlePlaces;
 
-/**
- * Created by sungholee on 4/22/16.
- */
 import android.util.Log;
 
 import java.io.BufferedReader;

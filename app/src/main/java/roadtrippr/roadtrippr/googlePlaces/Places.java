@@ -1,8 +1,5 @@
 package roadtrippr.roadtrippr.googlePlaces;
 
-/**
- * Created by sungholee on 4/22/16.
- */
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,6 +7,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import roadtrippr.roadtrippr.MainActivity;
 
@@ -27,8 +25,8 @@ public class Places {
 
     private List<HashMap<String, String>> getPlaces(JSONArray jsonArray) {
         int placesCount = jsonArray.length();
-        List<HashMap<String, String>> placesList = new ArrayList<HashMap<String, String>>();
-        HashMap<String, String> placeMap = null;
+        List<HashMap<String, String>> placesList = new ArrayList<>();
+        HashMap<String, String> placeMap;
 
         for (int i = 0; i < placesCount; i++) {
             try {
@@ -43,7 +41,7 @@ public class Places {
     }
 
     private HashMap<String, String> getPlace(JSONObject googlePlaceJson) {
-        HashMap<String, String> googlePlaceMap = new HashMap<String, String>();
+        HashMap<String, String> googlePlaceMap = new HashMap<>();
         String placeName = "-NA-";
         String id = "-NA-";
         String vicinity = "-NA-";
@@ -86,9 +84,9 @@ public class Places {
         dist = Math.acos(dist);
         dist = rad2deg(dist);
         dist = dist * 60 * 1.1515;
-        if (unit == "K") {
+        if (Objects.equals(unit, "K")) {
             dist = dist * 1.609344;
-        } else if (unit == "N") {
+        } else if (Objects.equals(unit, "N")) {
             dist = dist * 0.8684;
         }
 
