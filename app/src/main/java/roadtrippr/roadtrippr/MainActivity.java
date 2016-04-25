@@ -3,13 +3,9 @@ package roadtrippr.roadtrippr;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Vector;
-import android.media.RingtoneManager;
+
 import android.Manifest;
 import android.app.DialogFragment;
-import android.app.PendingIntent;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -64,7 +60,6 @@ public class MainActivity extends AppCompatActivity implements
     private LocationManager locationManager;
     private String provider;
     private boolean isRunning;
-    private boolean isNotified;
     private int hourPicked;
     private int minPicked;
     private static final int LOCATION_REQUEST_CODE = 1;
@@ -102,14 +97,12 @@ public class MainActivity extends AppCompatActivity implements
         }
         i.putExtra("destination", destination);
         isRunning = true;
-        isNotified = false;
         startTimer();
         startActivity(i);
     }
 
     public void cancelButton(View view) {
         if (isRunning) {
-            isNotified = false;
             countdown.cancel();
         }
 
@@ -213,11 +206,9 @@ public class MainActivity extends AppCompatActivity implements
         viewFlipper = (ViewFlipper) findViewById(R.id.viewflipper);
         final SharedPreferences sharedPref = getSharedPreferences("roadtrippr.roadtrippr", Context.MODE_PRIVATE);
         Boolean toggleMainScreen = sharedPref.getBoolean("toggleMainScreen", false);
-        TextView countdown = (TextView) findViewById(R.id.countdown);
-        countdown.setText("Searching...");
         Boolean navigating = sharedPref.getBoolean("navigating", false);
-        // Determine which screen to show
-        if (toggleMainScreen) {
+        // Switch to status screen if navigating
+        if (toggleMainScreen) { // I think this should occur once after returning from navigation
             viewFlipper.showNext();
             sharedPref.edit().putBoolean("toggleMainScreen", false).apply();
             // TODO is there a better place to put the following 2 statements?
@@ -439,6 +430,7 @@ public class MainActivity extends AppCompatActivity implements
         TextView countdown = (TextView) findViewById(R.id.countdown);
         final SharedPreferences sharedPref = getSharedPreferences("roadtrippr.roadtrippr", Context.MODE_PRIVATE);
         int window = sharedPref.getInt("timeWindow", 1);
+        int count = 0;
         public RemainingTime(long start, long interval) {
             super(start, interval);
         }
@@ -460,12 +452,11 @@ public class MainActivity extends AppCompatActivity implements
                 countdown.setText(String.format("%02d:%02d:%02d", hours, minutes, seconds));
             }
 
+            /* TO DO: IMPLEMENT NOTIFICATION
+            if (millisUntilFinished <= window) {
 
-            if (millisUntilFinished <= 300000 && !isNotified) {
-                isNotified = true;
-                showNotification();
             }
-
+            */
         }
 
         public void onFinish() {
@@ -498,33 +489,6 @@ public class MainActivity extends AppCompatActivity implements
                 countdown = new RemainingTime(hourDiff+minDiff, 1000).start();
             }
         }
-    }
-
-    public void showNotification() {
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,intent, 0);
-
-        Notification.InboxStyle inboxStyle = new Notification.InboxStyle();
-        inboxStyle.addLine("Wendy's - 6.5mi");
-        inboxStyle.addLine("Next Wendy's - 8.1mi");
-        inboxStyle.setBigContentTitle("RoadTrippr");
-        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-
-
-        Notification notification = new Notification.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("RoadTrippr")
-                //.setContentText("test")
-                .setStyle(inboxStyle)
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true)
-                .setSound(alarmSound)
-                .build();
-
-        notificationManager.notify(0, notification);
-
     }
 
     public static boolean isEnroute(LatLng stop) {
