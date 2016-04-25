@@ -3,6 +3,8 @@ package roadtrippr.roadtrippr;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.concurrent.ExecutionException;
 
 import android.Manifest;
 import android.app.DialogFragment;
@@ -19,6 +21,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
@@ -40,6 +43,7 @@ import android.widget.TimePicker;
 import android.widget.TextView;
 
 import roadtrippr.roadtrippr.googlePlaces.GooglePlacesActivity;
+import roadtrippr.roadtrippr.googlePlaces.GooglePlacesReadTask;
 import roadtrippr.roadtrippr.logger.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -73,6 +77,8 @@ public class MainActivity extends AppCompatActivity implements
     static ArrayList<String> currentFavRestaurants = new ArrayList<>(),
             currentFavTypes = new ArrayList<>(),
             currentNoRestaurants = new ArrayList<>();
+
+    public static final HashMap<String, Double> FAV_DISTANCES = new HashMap<>();
 
 
     AutoCompleteTextView endLocationTextView;
@@ -225,19 +231,26 @@ public class MainActivity extends AppCompatActivity implements
         if (navigating) {
             StringBuilder favRestaurantsStr = new StringBuilder();
             for(int i = 0; i < currentFavRestaurants.size(); i++) {
-                SearchResult r = new SearchResult(currentFavRestaurants.get(i), 1 /* TODO calculate distance */);
-                results.add(r);
-                favRestaurantsStr.append(r.getName());
-                favRestaurantsStr.append(" (");
-                favRestaurantsStr.append(((double)Math.round(r.getDistance()*10))/10.0);
-                favRestaurantsStr.append(" miles)\n");
+                //String type = placeText.getText().toString();
+                StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+                googlePlacesUrl.append("location=" + MainActivity.CURRENT_LOCATION.getLatitude() + "," + MainActivity.CURRENT_LOCATION.getLongitude());
+                googlePlacesUrl.append("&types=" + "restaurant");
+                googlePlacesUrl.append("&sensor=true");
+                googlePlacesUrl.append("&key=" + "AIzaSyB1cWnsuuiVHmlzwEDPos8efzlM9QOQNxI");
+                googlePlacesUrl.append("&rankby=distance");
+                googlePlacesUrl.append("&name=" + currentFavRestaurants.get(i));
+
+                GooglePlacesReadTask googlePlacesReadTask = new GooglePlacesReadTask();
+                Object[] toPass = new Object[7];
+                toPass[0] = null;
+                toPass[1] = googlePlacesUrl.toString();
+                toPass[2] = GooglePlacesReadTask.OP_FAVORITE;
+                toPass[3] = currentFavRestaurants.get(i);
+                toPass[4] = favRestaurantsStr;
+                toPass[5] = i == currentFavRestaurants.size() - 1;
+                toPass[6] = this;
+                googlePlacesReadTask.execute(toPass);
             }
-            userFavoriteRestaurants = (TextView) findViewById(R.id.userFavoriteRestaurants);
-            int favRestStrLen = favRestaurantsStr.length();
-            if (favRestStrLen > 1) { // remove trailing newline
-                favRestaurantsStr.deleteCharAt(favRestStrLen - 1);
-            }
-            userFavoriteRestaurants.setText(favRestaurantsStr.toString());
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

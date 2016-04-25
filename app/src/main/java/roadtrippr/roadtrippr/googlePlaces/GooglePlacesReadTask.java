@@ -4,9 +4,11 @@ package roadtrippr.roadtrippr.googlePlaces;
  * Created by sungholee on 4/22/16.
  */
 import android.os.AsyncTask;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
@@ -17,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import roadtrippr.roadtrippr.MainActivity;
+import roadtrippr.roadtrippr.R;
 
 public class GooglePlacesReadTask extends AsyncTask<Object, Integer, String> {
     GooglePlacesActivity googlePlacesActivity;
@@ -24,6 +27,10 @@ public class GooglePlacesReadTask extends AsyncTask<Object, Integer, String> {
     GoogleMap googleMap;
     ListView listView;
     int operation;
+    String favName = null;
+    boolean endLoop;
+    StringBuilder favRestaurantsStr = null;
+    AppCompatActivity activity = null;
 
     public static final int OP_NEARBY = 100;
     public static final int OP_FAVORITE = 200;
@@ -35,6 +42,12 @@ public class GooglePlacesReadTask extends AsyncTask<Object, Integer, String> {
             String googlePlacesUrl = (String) inputObj[1];
             Http http = new Http();
             operation = (int) inputObj[2];
+            if (operation == OP_FAVORITE) {
+                favName = (String) inputObj[3];
+                favRestaurantsStr = (StringBuilder) inputObj[4];
+                endLoop = (boolean) inputObj[5];
+                activity = (AppCompatActivity) inputObj[6];
+            }
             googlePlacesData = http.read(googlePlacesUrl);
         } catch (Exception e) {
             Log.d("Google Place Read Task", e.toString());
@@ -88,11 +101,23 @@ public class GooglePlacesReadTask extends AsyncTask<Object, Integer, String> {
         }
 
         if (operation == OP_NEARBY) {
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(googlePlacesActivity,
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(googlePlacesActivity,
                     android.R.layout.simple_list_item_1, android.R.id.text1, values);
             listView.setAdapter(adapter);
         } else if (operation == OP_FAVORITE) {
-
+            favRestaurantsStr.append(favName);
+            favRestaurantsStr.append(" (");
+            favRestaurantsStr.append(((double)Math.round(Double.parseDouble(nearbyList.get(0).get("distance"))*10))/10.0);
+            favRestaurantsStr.append(" miles)\n");
+            if (endLoop) {
+                TextView userFavoriteRestaurants = (TextView) activity.findViewById(R.id.userFavoriteRestaurants);
+                int favRestStrLen = favRestaurantsStr.length();
+                if (favRestStrLen > 1) { // remove trailing newline
+                    userFavoriteRestaurants.setLines(favRestaurantsStr.toString().split("\n").length);
+                    favRestaurantsStr.deleteCharAt(favRestStrLen - 1);
+                }
+                userFavoriteRestaurants.setText(favRestaurantsStr.toString());
+            }
         }
     }
 }

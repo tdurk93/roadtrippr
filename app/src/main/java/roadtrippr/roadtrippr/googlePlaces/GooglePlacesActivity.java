@@ -32,7 +32,7 @@ public class GooglePlacesActivity extends FragmentActivity implements LocationLi
     private static final String GOOGLE_API_KEY = "AIzaSyB1cWnsuuiVHmlzwEDPos8efzlM9QOQNxI";
     GoogleMap googleMap;
     EditText placeText;
-    private int PROXIMITY_RADIUS = 3300; // 3.3km = 2 miles
+    private int PROXIMITY_RADIUS = 8000; // ~5 miles
     private ListView listView;
 
     @Override
@@ -58,7 +58,7 @@ public class GooglePlacesActivity extends FragmentActivity implements LocationLi
         GooglePlacesReadTask googlePlacesReadTask = new GooglePlacesReadTask();
         googlePlacesReadTask.listView = listView;
         googlePlacesReadTask.googlePlacesActivity = this;
-        Object[] toPass = new Object[3];
+        Object[] toPass = new Object[7];
         toPass[0] = googleMap;
         toPass[1] = googlePlacesUrl.toString();
         toPass[2] = GooglePlacesReadTask.OP_NEARBY;
