@@ -1,5 +1,7 @@
 package roadtrippr.roadtrippr;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Vector;
 
@@ -64,6 +66,10 @@ public class MainActivity extends AppCompatActivity implements
     private static final int LOCATION_REQUEST_CODE = 1;
     private static final int SETUP_LOCATION_CODE = 2;
     private String destination = "Atlanta, GA";
+    static ArrayList<String> currentFavRestaurants = new ArrayList<>(),
+            currentFavTypes = new ArrayList<>(),
+            currentNoRestaurants = new ArrayList<>();
+
 
     AutoCompleteTextView endLocationTextView;
     TextView userFavoriteRestaurants;
@@ -81,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private static final String TAG = "PlaceAutocompleteAdapter";
 
-    String[] distance;
+    ArrayList<SearchResult> results = new ArrayList<>();
 
     LatLng destinationLatLng = null;
 
@@ -114,7 +120,6 @@ public class MainActivity extends AppCompatActivity implements
     public void onCancelNavigation(DialogFragment dialog) {
         final SharedPreferences sharedPref = getSharedPreferences("roadtrippr.roadtrippr", Context.MODE_PRIVATE);
         sharedPref.edit().putBoolean("navigating", false).apply();
-
         viewFlipper = (ViewFlipper) findViewById(R.id.viewflipper);
         viewFlipper.setInAnimation(AnimationUtils.loadAnimation(this, android.R.anim.slide_in_left));
         viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(this, android.R.anim.slide_out_right));
@@ -127,23 +132,13 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         viewFlipper = (ViewFlipper) findViewById(R.id.viewflipper);
 
-        // Switch to status screen if navigating
+        // TODO load currentFavRestaurants from sharedPrefs
+
         final SharedPreferences sharedPref = getSharedPreferences("roadtrippr.roadtrippr", Context.MODE_PRIVATE);
         Boolean navigating = sharedPref.getBoolean("navigating", false);
         if (navigating) {
-            sharedPref.edit().putBoolean("toggleMainScreen", true).apply();
+            viewFlipper.showNext();
         }
-
-        distance = new String[] {"(2 Miles)","(7 Miles)","(13 Miles)"};
-        final SharedPreferences sharedPreferences = this.getSharedPreferences("roadtrippr.roadtrippr", Context.MODE_PRIVATE);
-        String favRestaurantsString = sharedPreferences.getString("favRestaurants", "");
-        String[] favRestaurantsArray = favRestaurantsString.split(", ");
-        favRestaurantsString = "";
-        for(int i = 0; i < favRestaurantsArray.length; i++){
-            favRestaurantsString += favRestaurantsArray[i] + " " + distance[i] + "\n";
-        }
-        userFavoriteRestaurants = (TextView) findViewById(R.id.userFavoriteRestaurants);
-        userFavoriteRestaurants.setText(favRestaurantsString);
 
         // Construct a GoogleApiClient for the {@link Places#GEO_DATA_API} using AutoManage
         // functionality, which automatically sets up the API client to handle Activity lifecycle
@@ -212,28 +207,36 @@ public class MainActivity extends AppCompatActivity implements
         viewFlipper = (ViewFlipper) findViewById(R.id.viewflipper);
         final SharedPreferences sharedPref = getSharedPreferences("roadtrippr.roadtrippr", Context.MODE_PRIVATE);
         Boolean toggleMainScreen = sharedPref.getBoolean("toggleMainScreen", false);
-
-        // Determine which screen to show
-        if (toggleMainScreen) {
+        Boolean navigating = sharedPref.getBoolean("navigating", false);
+        // Switch to status screen if navigating
+        if (toggleMainScreen) { // I think this should occur once after returning from navigation
             viewFlipper.showNext();
             sharedPref.edit().putBoolean("toggleMainScreen", false).apply();
             // TODO is there a better place to put the following 2 statements?
             StatusMapFragment myGMapFragment = StatusMapFragment.newInstance(destination);
-                    ((MapFragment) getFragmentManager().findFragmentById(R.id.nearbyMap))
+            ((MapFragment) getFragmentManager().findFragmentById(R.id.nearbyMap))
                     .getMapAsync(myGMapFragment);
         }
+        if (navigating) {
+            StringBuilder favRestaurantsStr = new StringBuilder();
+            for(int i = 0; i < currentFavRestaurants.size(); i++) {
+                SearchResult r = new SearchResult(currentFavRestaurants.get(i), 1 /* TODO calculate distance */);
+                results.add(r);
+                favRestaurantsStr.append(r.getName());
+                favRestaurantsStr.append(" (");
+                favRestaurantsStr.append(((double)Math.round(r.getDistance()*10))/10.0);
+                favRestaurantsStr.append(" miles)\n");
+            }
+            userFavoriteRestaurants = (TextView) findViewById(R.id.userFavoriteRestaurants);
+            int favRestStrLen = favRestaurantsStr.length();
+            if (favRestStrLen > 1) { // remove trailing newline
+                favRestaurantsStr.deleteCharAt(favRestStrLen - 1);
+            }
+            userFavoriteRestaurants.setText(favRestaurantsStr.toString());
+        }
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        distance = new String[] {"(2 Miles)","(7 Miles)","(13 Miles)"};
-        final SharedPreferences sharedPreferences = this.getSharedPreferences("roadtrippr.roadtrippr", Context.MODE_PRIVATE);
-        String favRestaurantsString = sharedPreferences.getString("favRestaurants", "");
-        String[] favRestaurantsArray = favRestaurantsString.split(", ");
-        favRestaurantsString = "";
-        for(int i = 0; i < favRestaurantsArray.length; i++){
-            favRestaurantsString += favRestaurantsArray[i] + " " + distance[i] + "\n";
-        }
-        userFavoriteRestaurants = (TextView) findViewById(R.id.userFavoriteRestaurants);
-        userFavoriteRestaurants.setText(favRestaurantsString);
     }
 
     // ------------------- Google Places API -------------------
@@ -507,6 +510,27 @@ public class MainActivity extends AppCompatActivity implements
                 Math.sqrt(detourX * detourX + detourY * detourY) *
                         Math.sqrt(trajectoryX * trajectoryX + trajectoryY * trajectoryY)
         ) > 0; // Considered enroute if route is less than 90 degrees in the wrong direction
+
+    }
+
+    public class SearchResult {
+        private final String name;
+        private double distance;
+        public SearchResult(String name, double distance) {
+            this.name = name;
+            this.distance = distance;
+        }
+        public void setDistance(double distance) {
+            this.distance = distance;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public double getDistance() {
+            return distance;
+        }
 
     }
 
