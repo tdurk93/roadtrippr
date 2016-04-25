@@ -6,6 +6,9 @@ import java.util.Calendar;
 
 import android.Manifest;
 import android.app.DialogFragment;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,6 +17,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -60,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements
     private LocationManager locationManager;
     private String provider;
     private boolean isRunning;
+    private boolean isNotified;
     private int hourPicked;
     private int minPicked;
     private static final int LOCATION_REQUEST_CODE = 1;
@@ -103,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements
 
     public void cancelButton(View view) {
         if (isRunning) {
+            isNotified = false;
             countdown.cancel();
         }
 
@@ -452,11 +458,10 @@ public class MainActivity extends AppCompatActivity implements
                 countdown.setText(String.format("%02d:%02d:%02d", hours, minutes, seconds));
             }
 
-            /* TO DO: IMPLEMENT NOTIFICATION
-            if (millisUntilFinished <= window) {
-
+            if (millisUntilFinished <= 300000 && !isNotified) {
+                isNotified = true;
+                showNotification();
             }
-            */
         }
 
         public void onFinish() {
@@ -511,6 +516,34 @@ public class MainActivity extends AppCompatActivity implements
         ) > 0; // Considered enroute if route is less than 90 degrees in the wrong direction
 
     }
+
+    public void showNotification() {
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,intent, 0);
+
+        Notification.InboxStyle inboxStyle = new Notification.InboxStyle();
+        inboxStyle.addLine("Wendy's - 6.5mi");
+        inboxStyle.addLine("Next Wendy's - 8.1mi");
+        inboxStyle.setBigContentTitle("RoadTrippr");
+        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+
+        Notification notification = new Notification.Builder(this)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("RoadTrippr")
+                //.setContentText("test")
+                .setStyle(inboxStyle)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+                .setSound(alarmSound)
+                .build();
+
+        notificationManager.notify(0, notification);
+
+    }
+
 
     public class SearchResult {
         private final String name;
