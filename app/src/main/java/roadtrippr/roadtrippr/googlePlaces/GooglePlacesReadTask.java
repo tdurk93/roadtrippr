@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
@@ -28,9 +27,9 @@ public class GooglePlacesReadTask extends AsyncTask<Object, Integer, String> {
     ListView listView;
     int operation;
     String favName = null;
-    boolean endLoop;
-    StringBuilder favRestaurantsStr = null;
+    int index;
     AppCompatActivity activity = null;
+    ArrayAdapter<String> favoritesAdapter = null;
 
     public static final int OP_NEARBY = 100;
     public static final int OP_FAVORITE = 200;
@@ -44,9 +43,9 @@ public class GooglePlacesReadTask extends AsyncTask<Object, Integer, String> {
             operation = (int) inputObj[2];
             if (operation == OP_FAVORITE) {
                 favName = (String) inputObj[3];
-                favRestaurantsStr = (StringBuilder) inputObj[4];
-                endLoop = (boolean) inputObj[5];
-                activity = (AppCompatActivity) inputObj[6];
+                index = (int) inputObj[4];
+                activity = (AppCompatActivity) inputObj[5];
+                favoritesAdapter = (ArrayAdapter<String>)inputObj[6];
             }
             googlePlacesData = http.read(googlePlacesUrl);
         } catch (Exception e) {
@@ -105,19 +104,9 @@ public class GooglePlacesReadTask extends AsyncTask<Object, Integer, String> {
                     android.R.layout.simple_list_item_1, android.R.id.text1, values);
             listView.setAdapter(adapter);
         } else if (operation == OP_FAVORITE) {
-            favRestaurantsStr.append(favName);
-            favRestaurantsStr.append(" (");
-            favRestaurantsStr.append(((double)Math.round(Double.parseDouble(nearbyList.get(0).get("distance"))*10))/10.0);
-            favRestaurantsStr.append(" miles)\n");
-            if (endLoop) {
-                TextView userFavoriteRestaurants = (TextView) activity.findViewById(R.id.userFavoriteRestaurants);
-                int favRestStrLen = favRestaurantsStr.length();
-                if (favRestStrLen > 1) { // remove trailing newline
-                    userFavoriteRestaurants.setLines(favRestaurantsStr.toString().split("\n").length);
-                    favRestaurantsStr.deleteCharAt(favRestStrLen - 1);
-                }
-                userFavoriteRestaurants.setText(favRestaurantsStr.toString());
-            }
+            favoritesAdapter.add(favName + " (" + (double)Math.round(Double.parseDouble(nearbyList.get(0).get("distance"))*10)/10.0 + " miles)");
+            ListView userFavoriteRestaurants = (ListView) activity.findViewById(R.id.userFavoriteRestaurants);
+            userFavoriteRestaurants.setAdapter(favoritesAdapter);
         }
     }
 }

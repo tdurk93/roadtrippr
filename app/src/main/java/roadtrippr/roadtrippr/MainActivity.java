@@ -35,6 +35,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ViewFlipper;
 import android.widget.AutoCompleteTextView;
@@ -230,6 +231,7 @@ public class MainActivity extends AppCompatActivity implements
         }
         if (navigating) {
             StringBuilder favRestaurantsStr = new StringBuilder();
+            ArrayAdapter<String> favoritesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
             for(int i = 0; i < currentFavRestaurants.size(); i++) {
                 //String type = placeText.getText().toString();
                 StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
@@ -246,9 +248,9 @@ public class MainActivity extends AppCompatActivity implements
                 toPass[1] = googlePlacesUrl.toString();
                 toPass[2] = GooglePlacesReadTask.OP_FAVORITE;
                 toPass[3] = currentFavRestaurants.get(i);
-                toPass[4] = favRestaurantsStr;
-                toPass[5] = i == currentFavRestaurants.size() - 1;
-                toPass[6] = this;
+                toPass[4] = i;
+                toPass[5] = this;
+                toPass[6] = favoritesAdapter;
                 googlePlacesReadTask.execute(toPass);
             }
         }
