@@ -119,6 +119,7 @@ public class SettingsActivity extends AppCompatActivity implements GoogleApiClie
                 sharedPref.edit().putString("favRestaurantsTypes", str2).apply();
                 sharedPref.edit().putString("noRestaurants", str3).apply();
                 sharedPref.edit().putInt("timeWindow", int1).apply();
+                finish();
 
             }
         });

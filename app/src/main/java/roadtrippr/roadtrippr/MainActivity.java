@@ -262,14 +262,16 @@ public class MainActivity extends AppCompatActivity implements
         userFavoriteRestaurants.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                GOOGLE_MAP.addMarker(favoriteMarkers.get(position));
-                GOOGLE_MAP.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                        new LatLng(CURRENT_LOCATION.getLatitude(), CURRENT_LOCATION.getLongitude()), 14));
-                CameraPosition cameraPosition = new CameraPosition.Builder()
-                        .target(favoriteMarkers.get(position).getPosition())
-                        .zoom(14)
-                        .build();                   // Creates a CameraPosition from the builder
-                GOOGLE_MAP.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                if (favoriteMarkers.get(position) != null) {
+                    GOOGLE_MAP.addMarker(favoriteMarkers.get(position));
+                    GOOGLE_MAP.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                            new LatLng(CURRENT_LOCATION.getLatitude(), CURRENT_LOCATION.getLongitude()), 14));
+                    CameraPosition cameraPosition = new CameraPosition.Builder()
+                            .target(favoriteMarkers.get(position).getPosition())
+                            .zoom(14)
+                            .build();                   // Creates a CameraPosition from the builder
+                    GOOGLE_MAP.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                }
             }
         });
 

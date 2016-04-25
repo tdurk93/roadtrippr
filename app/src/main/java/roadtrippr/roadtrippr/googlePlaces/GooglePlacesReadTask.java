@@ -11,10 +11,10 @@ import android.widget.ListView;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -39,7 +39,7 @@ public class GooglePlacesReadTask extends AsyncTask<Object, Integer, String> {
     protected String doInBackground(Object... inputObj) {
         try {
             googleMap = (GoogleMap) inputObj[0];
-            String googlePlacesUrl = (String) inputObj[1];
+            String googlePlacesUrl = ((String) inputObj[1]).replaceAll(" ", "%20");
             Http http = new Http();
             operation = (int) inputObj[2];
             if (operation == OP_FAVORITE) {
@@ -50,7 +50,7 @@ public class GooglePlacesReadTask extends AsyncTask<Object, Integer, String> {
             }
             googlePlacesData = http.read(googlePlacesUrl);
         } catch (Exception e) {
-            Log.d("Google Place Read Task", e.toString());
+            Log.d("Google Place Read Task", e.toString() + "\n" + Arrays.toString(inputObj));
         }
         return googlePlacesData;
     }
@@ -99,7 +99,7 @@ public class GooglePlacesReadTask extends AsyncTask<Object, Integer, String> {
             markerOptions.title(placeName + " : " + vicinity);
             Log.d("nearby restaurant", placeName + ", id: " + id + ", distance: " + distance);
 
-            values[i] = placeName;
+            values[i] = placeName + " (" + (double)Math.round(Double.parseDouble(distance)*10)/10.0 + " miles)";
             if (operation == OP_NEARBY) {
                 MainActivity.nearbyMarkers.add(markerOptions);
             }
@@ -113,7 +113,7 @@ public class GooglePlacesReadTask extends AsyncTask<Object, Integer, String> {
                     android.R.layout.simple_list_item_1, android.R.id.text1, values);
             listView.setAdapter(adapter);
         } else if (operation == OP_FAVORITE) {
-            favoritesAdapter.add(favName + " (" + (double)Math.round(Double.parseDouble(nearbyList.get(0).get("distance"))*10)/10.0 + " miles)");
+            favoritesAdapter.add(favName + " (" + (nearbyList.isEmpty() ? "none close enroute" : ((double)Math.round(Double.parseDouble(nearbyList.get(0).get("distance"))*10)/10.0 + " miles")) + ")");
             ListView userFavoriteRestaurants = (ListView) activity.findViewById(R.id.userFavoriteRestaurants);
             userFavoriteRestaurants.setAdapter(favoritesAdapter);
             MainActivity.favoriteMarkers.put(index, favoriteMarker);
