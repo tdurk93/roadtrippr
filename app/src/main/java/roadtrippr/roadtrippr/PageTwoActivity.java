@@ -33,6 +33,9 @@ import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
+import java.util.Arrays;
+import java.util.ArrayList;
+
 public class PageTwoActivity extends AppCompatActivity
         implements GoogleApiClient.OnConnectionFailedListener {
 
@@ -54,6 +57,7 @@ public class PageTwoActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final SharedPreferences sharedPref = getSharedPreferences("roadtrippr.roadtrippr", Context.MODE_PRIVATE);
+
 
         setContentView(R.layout.activity_page_two);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -140,14 +144,10 @@ public class PageTwoActivity extends AppCompatActivity
 
                 // TODO: Implement Next Activity & Calculate Trip
 
-                String str1 = favRestaurants.getText().toString();
-                String str2 = favTypes.getText().toString();
-                String str3 = noRestaurants.getText().toString();
-
-                sharedPref.edit().putString("favRestaurants", str1).apply();
-                sharedPref.edit().putString("favRestaurantsTypes", str2).apply();
-                sharedPref.edit().putString("noRestaurants", str3).apply();
-
+                MainActivity.currentFavRestaurants = new ArrayList<>(Arrays.asList(favRestaurants.getText().toString().split(", ")));
+                MainActivity.currentFavTypes = new ArrayList<>(Arrays.asList(favTypes.getText().toString().split(", ")));
+                MainActivity.currentNoRestaurants = new ArrayList<>(Arrays.asList(noRestaurants.getText().toString().split(", ")));
+                // TODO save currentFavRestaurants (and related variables) to SharedPrefs
                 // Create a Uri from an intent string. Use the result to create an Intent.
                 Uri gmmIntentUri = Uri.parse("google.navigation:q=" + Uri.encode(getIntent().getStringExtra("destination")));
 
