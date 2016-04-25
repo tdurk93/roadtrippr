@@ -262,6 +262,7 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (favoriteMarkers.get(position) != null) {
+                    GOOGLE_MAP.clear();
                     GOOGLE_MAP.addMarker(favoriteMarkers.get(position));
                     GOOGLE_MAP.animateCamera(CameraUpdateFactory.newLatLngZoom(
                             new LatLng(CURRENT_LOCATION.getLatitude(), CURRENT_LOCATION.getLongitude()), 14));

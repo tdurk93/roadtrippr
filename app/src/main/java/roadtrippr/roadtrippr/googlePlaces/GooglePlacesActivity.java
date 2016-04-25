@@ -75,6 +75,7 @@ public class GooglePlacesActivity extends FragmentActivity implements LocationLi
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
+                MainActivity.GOOGLE_MAP.clear();
                 MainActivity.GOOGLE_MAP.addMarker(MainActivity.nearbyMarkers.get(position));
                 MainActivity.GOOGLE_MAP.animateCamera(CameraUpdateFactory.newLatLngZoom(
                         new LatLng(MainActivity.CURRENT_LOCATION.getLatitude(), MainActivity.CURRENT_LOCATION.getLongitude()), 14));
