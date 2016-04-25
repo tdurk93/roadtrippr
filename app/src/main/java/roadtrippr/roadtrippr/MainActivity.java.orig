@@ -3,8 +3,12 @@ package roadtrippr.roadtrippr;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+<<<<<<< HEAD
 import java.util.Vector;
 import android.media.RingtoneManager;
+=======
+
+>>>>>>> master
 import android.Manifest;
 import android.app.DialogFragment;
 import android.app.PendingIntent;
@@ -213,11 +217,16 @@ public class MainActivity extends AppCompatActivity implements
         viewFlipper = (ViewFlipper) findViewById(R.id.viewflipper);
         final SharedPreferences sharedPref = getSharedPreferences("roadtrippr.roadtrippr", Context.MODE_PRIVATE);
         Boolean toggleMainScreen = sharedPref.getBoolean("toggleMainScreen", false);
+<<<<<<< HEAD
         TextView countdown = (TextView) findViewById(R.id.countdown);
         countdown.setText("Searching...");
-        Boolean navigating = sharedPref.getBoolean("navigating", false);
         // Determine which screen to show
         if (toggleMainScreen) {
+=======
+        Boolean navigating = sharedPref.getBoolean("navigating", false);
+        // Switch to status screen if navigating
+        if (toggleMainScreen) { // I think this should occur once after returning from navigation
+>>>>>>> master
             viewFlipper.showNext();
             sharedPref.edit().putBoolean("toggleMainScreen", false).apply();
             // TODO is there a better place to put the following 2 statements?
@@ -500,6 +509,7 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+<<<<<<< HEAD
     public void showNotification() {
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
@@ -527,7 +537,10 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+    private boolean isEnroute(Location stop) {
+=======
     public static boolean isEnroute(LatLng stop) {
+>>>>>>> master
 
         double currLon = CURRENT_LOCATION.getLongitude();
         double currLat = CURRENT_LOCATION.getLatitude();
