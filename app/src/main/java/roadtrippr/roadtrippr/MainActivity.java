@@ -524,8 +524,8 @@ public class MainActivity extends AppCompatActivity implements
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,intent, 0);
 
         Notification.InboxStyle inboxStyle = new Notification.InboxStyle();
-        inboxStyle.addLine("Wendy's - 6.5mi");
-        inboxStyle.addLine("Next Wendy's - 8.1mi");
+        inboxStyle.addLine("Nearest Restaurant Details");
+        inboxStyle.addLine("Click here to view all nearby Restaurant");
         inboxStyle.setBigContentTitle("RoadTrippr");
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
