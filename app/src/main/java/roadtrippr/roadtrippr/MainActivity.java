@@ -1,10 +1,8 @@
 package roadtrippr.roadtrippr;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.concurrent.ExecutionException;
 
 import android.Manifest;
 import android.app.DialogFragment;
@@ -21,7 +19,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
@@ -37,6 +34,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.ViewFlipper;
 import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
@@ -55,9 +53,13 @@ import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener,
@@ -80,6 +82,9 @@ public class MainActivity extends AppCompatActivity implements
             currentNoRestaurants = new ArrayList<>();
 
     public static final HashMap<String, Double> FAV_DISTANCES = new HashMap<>();
+    public static GoogleMap GOOGLE_MAP = null;
+    public static ArrayList<MarkerOptions> nearbyMarkers = new ArrayList<>();
+    public static HashMap<Integer, MarkerOptions> favoriteMarkers = new HashMap<>();
 
 
     AutoCompleteTextView endLocationTextView;
@@ -220,20 +225,19 @@ public class MainActivity extends AppCompatActivity implements
         final SharedPreferences sharedPref = getSharedPreferences("roadtrippr.roadtrippr", Context.MODE_PRIVATE);
         Boolean toggleMainScreen = sharedPref.getBoolean("toggleMainScreen", false);
         Boolean navigating = sharedPref.getBoolean("navigating", false);
+        GoogleMap gmap = null;
         // Switch to status screen if navigating
         if (toggleMainScreen) { // I think this should occur once after returning from navigation
             viewFlipper.showNext();
             sharedPref.edit().putBoolean("toggleMainScreen", false).apply();
             // TODO is there a better place to put the following 2 statements?
             StatusMapFragment myGMapFragment = StatusMapFragment.newInstance(destination);
-            ((MapFragment) getFragmentManager().findFragmentById(R.id.nearbyMap))
-                    .getMapAsync(myGMapFragment);
+            ((MapFragment) getFragmentManager().findFragmentById(R.id.nearbyMap)).getMapAsync(myGMapFragment);
+
         }
         if (navigating) {
-            StringBuilder favRestaurantsStr = new StringBuilder();
             ArrayAdapter<String> favoritesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
             for(int i = 0; i < currentFavRestaurants.size(); i++) {
-                //String type = placeText.getText().toString();
                 StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
                 googlePlacesUrl.append("location=" + MainActivity.CURRENT_LOCATION.getLatitude() + "," + MainActivity.CURRENT_LOCATION.getLongitude());
                 googlePlacesUrl.append("&types=" + "restaurant");
@@ -254,6 +258,20 @@ public class MainActivity extends AppCompatActivity implements
                 googlePlacesReadTask.execute(toPass);
             }
         }
+        ListView userFavoriteRestaurants = (ListView) findViewById(R.id.userFavoriteRestaurants);
+        userFavoriteRestaurants.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                GOOGLE_MAP.addMarker(favoriteMarkers.get(position));
+                GOOGLE_MAP.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                        new LatLng(CURRENT_LOCATION.getLatitude(), CURRENT_LOCATION.getLongitude()), 14));
+                CameraPosition cameraPosition = new CameraPosition.Builder()
+                        .target(favoriteMarkers.get(position).getPosition())
+                        .zoom(14)
+                        .build();                   // Creates a CameraPosition from the builder
+                GOOGLE_MAP.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            }
+        });
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -543,7 +561,6 @@ public class MainActivity extends AppCompatActivity implements
         inboxStyle.addLine("Click here to view all nearby Restaurant");
         inboxStyle.setBigContentTitle("RoadTrippr");
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-
 
         Notification notification = new Notification.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)

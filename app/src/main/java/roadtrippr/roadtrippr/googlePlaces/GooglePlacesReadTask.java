@@ -11,6 +11,7 @@ import android.widget.ListView;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
@@ -80,6 +81,10 @@ public class GooglePlacesReadTask extends AsyncTask<Object, Integer, String> {
 
         String[] values = new String[nearbyList.size()];
         Log.d("NEARBY COUNT", "" + nearbyList.size());
+        if (operation == OP_NEARBY) {
+            MainActivity.nearbyMarkers = new ArrayList<>();
+        }
+        MarkerOptions favoriteMarker = null;
         for (int i = 0; i < nearbyList.size(); i++) {
             MarkerOptions markerOptions = new MarkerOptions();
             HashMap<String, String> googlePlace = nearbyList.get(i);
@@ -92,11 +97,15 @@ public class GooglePlacesReadTask extends AsyncTask<Object, Integer, String> {
             String distance = googlePlace.get("distance");
             markerOptions.position(latLng);
             markerOptions.title(placeName + " : " + vicinity);
-            //googleMap.addMarker(markerOptions);
             Log.d("nearby restaurant", placeName + ", id: " + id + ", distance: " + distance);
 
             values[i] = placeName;
-
+            if (operation == OP_NEARBY) {
+                MainActivity.nearbyMarkers.add(markerOptions);
+            }
+            if (i == 0) {
+                favoriteMarker = markerOptions;
+            }
         }
 
         if (operation == OP_NEARBY) {
@@ -107,6 +116,7 @@ public class GooglePlacesReadTask extends AsyncTask<Object, Integer, String> {
             favoritesAdapter.add(favName + " (" + (double)Math.round(Double.parseDouble(nearbyList.get(0).get("distance"))*10)/10.0 + " miles)");
             ListView userFavoriteRestaurants = (ListView) activity.findViewById(R.id.userFavoriteRestaurants);
             userFavoriteRestaurants.setAdapter(favoritesAdapter);
+            MainActivity.favoriteMarkers.put(index, favoriteMarker);
         }
     }
 }

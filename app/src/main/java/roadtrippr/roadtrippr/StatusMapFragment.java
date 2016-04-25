@@ -108,7 +108,7 @@ public class StatusMapFragment extends MapFragment implements OnMapReadyCallback
 
     public void onMapReady(GoogleMap map) {
         centerMapOnCurrentLocation(map);
-
+        MainActivity.GOOGLE_MAP = map;
     }
 
     public void centerMapOnCurrentLocation(GoogleMap map) {

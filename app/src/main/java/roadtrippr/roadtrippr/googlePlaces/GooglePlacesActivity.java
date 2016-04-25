@@ -23,6 +23,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 
 import roadtrippr.roadtrippr.MainActivity;
@@ -74,18 +75,15 @@ public class GooglePlacesActivity extends FragmentActivity implements LocationLi
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-
-                // ListView Clicked item index
-                int itemPosition     = position;
-
-                // ListView Clicked item value
-                String  itemValue    = (String) listView.getItemAtPosition(position);
-
-                // Show Alert
-                Toast.makeText(getApplicationContext(),
-                        "Position :" + itemPosition + "  ListItem : " + itemValue, Toast.LENGTH_LONG)
-                        .show();
-
+                MainActivity.GOOGLE_MAP.addMarker(MainActivity.nearbyMarkers.get(position));
+                MainActivity.GOOGLE_MAP.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                        new LatLng(MainActivity.CURRENT_LOCATION.getLatitude(), MainActivity.CURRENT_LOCATION.getLongitude()), 14));
+                CameraPosition cameraPosition = new CameraPosition.Builder()
+                        .target(MainActivity.nearbyMarkers.get(position).getPosition())
+                        .zoom(14)
+                        .build();                   // Creates a CameraPosition from the builder
+                MainActivity.GOOGLE_MAP.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                finish();
             }
 
         });
