@@ -123,6 +123,7 @@ public class StatusMapFragment extends MapFragment implements OnMapReadyCallback
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
+        // }
         try {
             map.setMyLocationEnabled(true);
             LocationManager locationManager = (LocationManager) myContext.getSystemService(Context.LOCATION_SERVICE);
@@ -130,16 +131,18 @@ public class StatusMapFragment extends MapFragment implements OnMapReadyCallback
             Criteria criteria = new Criteria();
             Location location = locationManager.getLastKnownLocation(locationManager
                     .getBestProvider(criteria, false));
-                map.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                        new LatLng(location.getLatitude(), location.getLongitude()), 14));
-                CameraPosition cameraPosition = new CameraPosition.Builder()
-                        .target(new LatLng(location.getLatitude(), location.getLongitude()))
-                        .zoom(14)
-                        .build();                   // Creates a CameraPosition from the builder
-                map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                    new LatLng(location.getLatitude(), location.getLongitude()), 14));
+            CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .target(new LatLng(location.getLatitude(), location.getLongitude()))
+                    .zoom(14)
+                    .build();                   // Creates a CameraPosition from the builder
+            map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
         } catch (java.lang.SecurityException e) {
             Log.e("StatusMapFragment", "Need permission to do that!");
+        } catch (java.lang.Exception e) {
+            Log.e("StatusMapFragment", "Unable to zoom in to user's location.");
         }
     }
     */

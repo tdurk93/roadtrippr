@@ -45,7 +45,8 @@ import com.google.android.gms.location.places.AutocompletePredictionBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLngBounds;
 
-import roadtrippr.roadtrippr.logger.Log;
+//import roadtrippr.roadtrippr.logger.Log;
+import android.util.Log;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -77,7 +78,8 @@ public class PlaceAutocompleteAdapter
 
     private static final String TAG = "PlaceAutocompleteAdapter";
     private static final CharacterStyle STYLE_BOLD = new StyleSpan(Typeface.BOLD);
-    private ArrayList<String> autocompleteRestaurants = new ArrayList<String>();
+    private ArrayList<String> autocompleteRestaurants = new ArrayList<String>(); //keeps track of "unique" restaurants among suggestions
+    private int positionOffset = 0; //increments when a duplicate appears among suggestions. This offset is deducted from "position"
     /**
      * Current results returned by this adapter.
      */
@@ -143,36 +145,43 @@ public class PlaceAutocompleteAdapter
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View row = super.getView(position, convertView, parent);
+        if (position == 0) {
+            autocompleteRestaurants.clear();
+            positionOffset = 0;
+        }
+
+        View row = super.getView(position - positionOffset, convertView, parent);
 
         // Sets the primary and secondary text for a row.
         // Note that getPrimaryText() and getSecondaryText() return a CharSequence that may contain
         // styling based on the given CharacterStyle.
 
         AutocompletePrediction item = getItem(position);
-
         TextView textView1 = (TextView) row.findViewById(android.R.id.text1);
-        TextView textView2 = (TextView) row.findViewById(android.R.id.text2);
-        textView1.setText(item.getPrimaryText(STYLE_BOLD)); // restaurant name
-        //textView2.setText(item.getSecondaryText(STYLE_BOLD)); // restaurant address
+        //TextView textView2 = (TextView) row.findViewById(android.R.id.text2);
+        textView1.setText(item.getPrimaryText(STYLE_BOLD)); // set restaurant name
+        //textView2.setText(item.getSecondaryText(STYLE_BOLD)); // set restaurant address
 
         // check if a restaurant with the same name has already appeared in prior suggestions
-        Log.d("tag", "hihi");
         boolean exists = false;
         Iterator<String> iterator = autocompleteRestaurants.iterator();
+        Log.d("view pos", String.valueOf(position - positionOffset));
+        Log.d("text1", item.getPrimaryText(STYLE_BOLD).toString());
+        textView1.setText(item.getPrimaryText(STYLE_BOLD));
         while (iterator.hasNext()) {
-            Log.d("tag", item.getPrimaryText(STYLE_BOLD).toString());
+            //Log.d("duplicateTest", item.getPrimaryText(STYLE_BOLD).toString());
             if (iterator.next().equalsIgnoreCase(item.getPrimaryText(STYLE_BOLD).toString())) {
-                // it's a duplicate, so don't remove suggestion
+                // it's a duplicate, so skip
                 exists = true;
                 break;
             }
         }
 
         if (exists) {
-            //textView1.setText("");
+            textView1.setText("");
+            positionOffset++;
         } else {
-            autocompleteRestaurants.add(textView1.getText().toString());
+            autocompleteRestaurants.add(item.getPrimaryText(STYLE_BOLD).toString());
         }
 
         return row;
