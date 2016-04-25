@@ -40,6 +40,7 @@ public class GooglePlacesReadTask extends AsyncTask<Object, Integer, String> {
         try {
             googleMap = (GoogleMap) inputObj[0];
             String googlePlacesUrl = ((String) inputObj[1]).replaceAll(" ", "%20");
+            Log.d("REQUEST", googlePlacesUrl);
             Http http = new Http();
             operation = (int) inputObj[2];
             if (operation == OP_FAVORITE) {
@@ -99,7 +100,7 @@ public class GooglePlacesReadTask extends AsyncTask<Object, Integer, String> {
             markerOptions.title(placeName + " : " + vicinity);
             Log.d("nearby restaurant", placeName + ", id: " + id + ", distance: " + distance);
 
-            values[i] = placeName + " (" + (double)Math.round(Double.parseDouble(distance)*10)/10.0 + " miles)";
+            values[i] = (double)Math.round(Double.parseDouble(distance)*10)/10.0 + " mi "  + placeName + (googlePlace.get("rating") == null ? "" : " (" + googlePlace.get("rating") + "/5 ☆)");
             if (operation == OP_NEARBY) {
                 MainActivity.nearbyMarkers.add(markerOptions);
             }
@@ -113,7 +114,7 @@ public class GooglePlacesReadTask extends AsyncTask<Object, Integer, String> {
                     android.R.layout.simple_list_item_1, android.R.id.text1, values);
             listView.setAdapter(adapter);
         } else if (operation == OP_FAVORITE) {
-            favoritesAdapter.add(favName + " (" + (nearbyList.isEmpty() ? "none close enroute" : ((double)Math.round(Double.parseDouble(nearbyList.get(0).get("distance"))*10)/10.0 + " miles")) + ")");
+            favoritesAdapter.add(favName + " (" + (nearbyList.isEmpty() ? "none close enroute" : ((double)Math.round(Double.parseDouble(nearbyList.get(0).get("distance"))*10)/10.0 + " mi")) + ")");
             ListView userFavoriteRestaurants = (ListView) activity.findViewById(R.id.userFavoriteRestaurants);
             userFavoriteRestaurants.setAdapter(favoritesAdapter);
             MainActivity.favoriteMarkers.put(index, favoriteMarker);

@@ -240,7 +240,6 @@ public class MainActivity extends AppCompatActivity implements
             for(int i = 0; i < currentFavRestaurants.size(); i++) {
                 StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
                 googlePlacesUrl.append("location=" + MainActivity.CURRENT_LOCATION.getLatitude() + "," + MainActivity.CURRENT_LOCATION.getLongitude());
-                googlePlacesUrl.append("&types=" + "restaurant");
                 googlePlacesUrl.append("&sensor=true");
                 googlePlacesUrl.append("&key=" + "AIzaSyB1cWnsuuiVHmlzwEDPos8efzlM9QOQNxI");
                 googlePlacesUrl.append("&rankby=distance");
@@ -378,6 +377,7 @@ public class MainActivity extends AppCompatActivity implements
                 places.release();
             } else {
                 destinationLatLng = places.get(0).getLatLng();
+                places.release();
             }
         }
     };

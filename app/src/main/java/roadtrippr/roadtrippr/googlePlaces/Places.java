@@ -73,6 +73,7 @@ public class Places {
             googlePlaceMap.put("lng", longitude);
             googlePlaceMap.put("distance", distance);
             googlePlaceMap.put("reference", reference);
+            googlePlaceMap.put("rating", googlePlaceJson.getString("rating"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
