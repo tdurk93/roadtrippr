@@ -21,7 +21,7 @@ public class PlacesDisplayTask extends AsyncTask<Object, Integer, List<HashMap<S
     GoogleMap googleMap;
     String result;
 
-    public List<HashMap<String, String>> getNearbyPlaces() {
+    public List<HashMap<String, String>> getPlacesResult() {
 
         List<HashMap<String, String>> googlePlacesList = null;
         Places placeJsonParser = new Places();

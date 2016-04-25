@@ -23,6 +23,10 @@ public class GooglePlacesReadTask extends AsyncTask<Object, Integer, String> {
     String googlePlacesData = null;
     GoogleMap googleMap;
     ListView listView;
+    int operation;
+
+    public static final int OP_NEARBY = 100;
+    public static final int OP_FAVORITE = 200;
 
     @Override
     protected String doInBackground(Object... inputObj) {
@@ -45,7 +49,7 @@ public class GooglePlacesReadTask extends AsyncTask<Object, Integer, String> {
         placesDisplayTask.googleMap = googleMap;
         placesDisplayTask.result = result;
 
-        List<HashMap<String, String>> nearbyList = placesDisplayTask.getNearbyPlaces();
+        List<HashMap<String, String>> nearbyList = placesDisplayTask.getPlacesResult();
 
         Log.d("NEARBY COUNT", "" + nearbyList.size());
         ArrayList<HashMap<String, String>> removeList = new ArrayList<>();
@@ -81,8 +85,12 @@ public class GooglePlacesReadTask extends AsyncTask<Object, Integer, String> {
 
         }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(googlePlacesActivity,
-                android.R.layout.simple_list_item_1, android.R.id.text1, values);
-        listView.setAdapter(adapter);
+        if (operation == OP_FAVORITE) {
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(googlePlacesActivity,
+                    android.R.layout.simple_list_item_1, android.R.id.text1, values);
+            listView.setAdapter(adapter);
+        } else if (operation == OP_NEARBY) {
+
+        }
     }
 }
