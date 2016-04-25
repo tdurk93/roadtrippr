@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements
 
     ArrayList<SearchResult> results = new ArrayList<>();
 
-    LatLng destinationLatLng = null;
+    static LatLng destinationLatLng = null;
 
     public void onContinueClicked(View view) {
         Intent i = new Intent(getApplicationContext(), PageTwoActivity.class);
@@ -502,8 +502,8 @@ public class MainActivity extends AppCompatActivity implements
         double currLat = CURRENT_LOCATION.getLatitude();
         double stopLon = stop.longitude;
         double stopLat = stop.latitude;
-        double destLon = 0; // TODO insert actual value
-        double destLat = 0; // TODO insert actual value
+        double destLon = destinationLatLng.longitude;
+        double destLat = destinationLatLng.latitude;
         double trajectoryX = destLon - currLon;
         double trajectoryY = destLat - currLat;
         double detourX = stopLon - currLon;

@@ -58,9 +58,10 @@ public class GooglePlacesActivity extends FragmentActivity implements LocationLi
         GooglePlacesReadTask googlePlacesReadTask = new GooglePlacesReadTask();
         googlePlacesReadTask.listView = listView;
         googlePlacesReadTask.googlePlacesActivity = this;
-        Object[] toPass = new Object[2];
+        Object[] toPass = new Object[3];
         toPass[0] = googleMap;
         toPass[1] = googlePlacesUrl.toString();
+        toPass[2] = GooglePlacesReadTask.OP_NEARBY;
         googlePlacesReadTask.execute(toPass);
     }
 

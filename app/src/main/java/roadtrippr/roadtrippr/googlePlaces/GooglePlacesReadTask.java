@@ -34,6 +34,7 @@ public class GooglePlacesReadTask extends AsyncTask<Object, Integer, String> {
             googleMap = (GoogleMap) inputObj[0];
             String googlePlacesUrl = (String) inputObj[1];
             Http http = new Http();
+            operation = (int) inputObj[2];
             googlePlacesData = http.read(googlePlacesUrl);
         } catch (Exception e) {
             Log.d("Google Place Read Task", e.toString());
@@ -57,10 +58,11 @@ public class GooglePlacesReadTask extends AsyncTask<Object, Integer, String> {
             double lat = Double.parseDouble(googlePlace.get("lat"));
             double lng = Double.parseDouble(googlePlace.get("lng"));
             if (!MainActivity.isEnroute(new LatLng(lat, lng))) {
-                Log.d("ENROUTE FILTER", "" + "removing");
+                Log.d("ENROUTE FILTER", "" + "removing" + googlePlace.get("place_name"));
                 removeList.add(googlePlace);
+            } else {
+                Log.d("ENROUTE FILTER", "" + "not removing" + googlePlace.get("place_name"));
             }
-            Log.d("ENROUTE FILTER", "" + "not removing");
         }
         nearbyList.removeAll(removeList);
 
@@ -85,11 +87,11 @@ public class GooglePlacesReadTask extends AsyncTask<Object, Integer, String> {
 
         }
 
-        if (operation == OP_FAVORITE) {
+        if (operation == OP_NEARBY) {
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(googlePlacesActivity,
                     android.R.layout.simple_list_item_1, android.R.id.text1, values);
             listView.setAdapter(adapter);
-        } else if (operation == OP_NEARBY) {
+        } else if (operation == OP_FAVORITE) {
 
         }
     }
