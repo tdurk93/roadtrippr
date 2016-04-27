@@ -65,7 +65,6 @@ public class MainActivity extends AppCompatActivity implements
         CancelNavigationFragment.CancelNavigationListener,
         StatusMapFragment.OnFragmentInteractionListener {
     private ViewFlipper viewFlipper;
-    private TimePicker tp;
     private CountDownTimer countdown;
     private LocationManager locationManager;
     private String provider;
@@ -161,7 +160,8 @@ public class MainActivity extends AppCompatActivity implements
 
         setupLocation(true);
 
-        tp = (TimePicker) findViewById(R.id.mealTimePicker);
+        TimePicker tp = (TimePicker) findViewById(R.id.mealTimePicker);
+        assert tp != null;
         tp.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
             @Override
             public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
@@ -178,6 +178,7 @@ public class MainActivity extends AppCompatActivity implements
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                assert continueButton != null;
                 continueButton.setEnabled(endLocationTextView.getText().length() != 0);
             }
 
@@ -218,7 +219,6 @@ public class MainActivity extends AppCompatActivity implements
         final SharedPreferences sharedPref = getSharedPreferences("roadtrippr.roadtrippr", Context.MODE_PRIVATE);
         Boolean toggleMainScreen = sharedPref.getBoolean("toggleMainScreen", false);
         Boolean navigating = sharedPref.getBoolean("navigating", false);
-        GoogleMap gmap = null;
         // Switch to status screen if navigating
         if (toggleMainScreen) { // I think this should occur once after returning from navigation
             viewFlipper.showNext();
@@ -231,17 +231,17 @@ public class MainActivity extends AppCompatActivity implements
         if (navigating) {
             ArrayAdapter<String> favoritesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
             for(int i = 0; i < currentFavRestaurants.size(); i++) {
-                StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
-                googlePlacesUrl.append("location=" + MainActivity.CURRENT_LOCATION.getLatitude() + "," + MainActivity.CURRENT_LOCATION.getLongitude());
-                googlePlacesUrl.append("&sensor=true");
-                googlePlacesUrl.append("&key=" + "AIzaSyB1cWnsuuiVHmlzwEDPos8efzlM9QOQNxI");
-                googlePlacesUrl.append("&rankby=distance");
-                googlePlacesUrl.append("&name=" + currentFavRestaurants.get(i));
 
                 GooglePlacesReadTask googlePlacesReadTask = new GooglePlacesReadTask();
                 Object[] toPass = new Object[7];
                 toPass[0] = null;
-                toPass[1] = googlePlacesUrl.toString();
+                toPass[1] =
+                        "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" +
+                        "location=" + MainActivity.CURRENT_LOCATION.getLatitude() + "," + MainActivity.CURRENT_LOCATION.getLongitude() +
+                        "&sensor=true" +
+                        "&key=AIzaSyB1cWnsuuiVHmlzwEDPos8efzlM9QOQNxI" +
+                        "&rankby=distance" +
+                        "&name=" + currentFavRestaurants.get(i);
                 toPass[2] = GooglePlacesReadTask.OP_FAVORITE;
                 toPass[3] = currentFavRestaurants.get(i);
                 toPass[4] = i;
@@ -251,6 +251,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         }
         ListView userFavoriteRestaurants = (ListView) findViewById(R.id.userFavoriteRestaurants);
+        assert userFavoriteRestaurants != null;
         userFavoriteRestaurants.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -284,6 +285,7 @@ public class MainActivity extends AppCompatActivity implements
 
         endLocationTextView = (AutoCompleteTextView)findViewById(R.id.endLocationAutoCompleteTextView);
 
+        assert endLocationTextView != null;
         endLocationTextView.setOnItemClickListener(mAutocompleteViewClickListener);
         endLocationTextView.setAdapter(mAdapter);
 
@@ -364,7 +366,7 @@ public class MainActivity extends AppCompatActivity implements
     private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback
             = new ResultCallback<PlaceBuffer>() {
         @Override
-        public void onResult(PlaceBuffer places) {
+        public void onResult(@NonNull PlaceBuffer places) {
             if (!places.getStatus().isSuccess()) {
                 // Request did not complete successfully
                 Log.e(TAG, "Place query did not complete. Error: " + places.getStatus().toString());
@@ -384,12 +386,11 @@ public class MainActivity extends AppCompatActivity implements
      * @param connectionResult can be inspected to determine the cause of the failure
      */
     @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
         Log.e(TAG, "onConnectionFailed: ConnectionResult.getErrorCode() = "
                 + connectionResult.getErrorCode());
 
-        // TODO(Developer): Check error code and notify the user of error state and resolution.
         Toast.makeText(this,
                 "Could not connect to Google API Client: Error " + connectionResult.getErrorCode(),
                 Toast.LENGTH_SHORT).show();
@@ -423,10 +424,6 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    public void toastLocation(View view) {
-        toastLocation();
-    }
-
     private void toastLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED
@@ -457,9 +454,7 @@ public class MainActivity extends AppCompatActivity implements
     public class RemainingTime extends CountDownTimer {
 
         TextView countdown = (TextView) findViewById(R.id.countdown);
-        final SharedPreferences sharedPref = getSharedPreferences("roadtrippr.roadtrippr", Context.MODE_PRIVATE);
-        int window = sharedPref.getInt("timeWindow", 1);
-        int count = 0;
+
         public RemainingTime(long start, long interval) {
             super(start, interval);
         }
