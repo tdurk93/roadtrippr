@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.DialogFragment;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -19,6 +20,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
@@ -135,6 +137,7 @@ public class MainActivity extends AppCompatActivity implements
         viewFlipper.showPrevious();
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -172,6 +175,11 @@ public class MainActivity extends AppCompatActivity implements
 
         final Button continueButton;
         continueButton = (Button) findViewById(R.id.continueButton);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    123);
+            return;
+        }
         endLocationTextView.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
